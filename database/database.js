@@ -53,10 +53,22 @@ const executeQuery = (db, query, params = []) => {
   });
 };
 
+
+// WALLET FUNCTIONS
 const addWallet=(name, amount, icon)=>{
   const db = openDatabase();
   return executeQuery(db, 'INSERT INTO wallets(name, amount, icon) VALUES(?,?,?);', [name, amount, icon]);
 };
+
+const deleteWallet = (id) => {
+  const db = openDatabase();
+  return executeQuery(db, 'DELETE FROM wallets WHERE id=?',[id]);
+}
+
+const updateWallet = (id, name, amount, icon) => {
+  const db = openDatabase();
+  return executeQuery(db, 'UPDATE wallets SET name=?, amount=?, icon=? WHERE id=?',[name, amount, icon, id]);
+}
 
 const readWallets = () => {
   const db = openDatabase();
