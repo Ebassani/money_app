@@ -2,7 +2,7 @@ import SQLite from 'react-native-sqlite-storage';
 
 const DATABASE_NAME = 'money.db';
 
-const SQL = 'CREATE TABLE wallets ( id SERIAL PRIMARY KEY, name VARCHAR, amount INTEGER, icon VARCHAR ); CREATE TABLE expense_type ( id SERIAL PRIMARY KEY, name VARCHAR, icon VARCHAR ); CREATE TABLE expenses ( id SERIAL PRIMARY KEY, expense_type_id INTEGER REFERENCES expense_type(id), amount INTEGER, date DATE ); CREATE TABLE add_type ( id SERIAL PRIMARY KEY, name VARCHAR, icon VARCHAR ); CREATE TABLE additives ( id SERIAL PRIMARY KEY, add_type_id INTEGER REFERENCES add_type(id), amount INTEGER, date DATE ); CREATE TABLE debt ( id SERIAL PRIMARY KEY, creditor VARCHAR, amount INTEGER, due_date DATE ); CREATE TABLE savings ( id SERIAL PRIMARY KEY, title VARCHAR, amount INTEGER, last_updated DATE, percentage DECIMAL );';
+const SQL = 'CREATE TABLE wallets ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, amount FLOAT, icon TEXT ); CREATE TABLE expense_type ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, icon TEXT ); CREATE TABLE expenses ( id INTEGER PRIMARY KEY AUTOINCREMENT, expense_type_id INTEGER REFERENCES expense_type(id), amount FLOAT, date DATE ); CREATE TABLE add_type ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, icon TEXT ); CREATE TABLE additives ( id INTEGER PRIMARY KEY AUTOINCREMENT, add_type_id INTEGER REFERENCES add_type(id), amount FLOAT, date DATE ); CREATE TABLE debt ( id INTEGER PRIMARY KEY AUTOINCREMENT, creditor TEXT, amount FLOAT, due_date DATE ); CREATE TABLE savings ( id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, amount FLOAT, last_updated DATE, percentage DECIMAL );';
 
 const createTables = (db) => {
   try {
@@ -17,7 +17,7 @@ const createTables = (db) => {
   }
 };
 
-const openDatabase = () => {
+const init = () => {
   const db = SQLite.openDatabase(
     {
       name: DATABASE_NAME,
@@ -37,6 +37,8 @@ const openDatabase = () => {
 
   return db;
 }
+
+const openDatabase = () => {return SQLite.openDatabase({name: DATABASE_NAME, location: 'default'})}
 
 const executeQuery = (db, query, params = []) => {
   return new Promise((resolve, reject) => {
@@ -64,7 +66,7 @@ const readWallets = () => {
       .then(result => {
         let items=[];
         for (let i = 0; i < result.rows.length; i++){
-            items.push(result.rows.item(i));
+          items.push(result.rows.item(i));
         }
         resolve(items);
       })
@@ -78,4 +80,4 @@ const readWallets = () => {
 };
 
 
-export { openDatabase, addWallet, createTables, readWallets };
+export { openDatabase, addWallet, createTables, readWallets, init };

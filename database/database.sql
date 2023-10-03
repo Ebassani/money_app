@@ -1,46 +1,46 @@
 CREATE TABLE wallets (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
     amount FLOAT,
-    icon VARCHAR
+    icon TEXT
 );
 
 CREATE TABLE expense_type (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR,
-    icon VARCHAR
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    icon TEXT
 );
 
 CREATE TABLE expenses (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     expense_type_id INTEGER REFERENCES expense_type(id),
     amount FLOAT,
     date DATE
 );
 
 CREATE TABLE add_type (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR,
-    icon VARCHAR
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    icon TEXT
 );
 
 CREATE TABLE additives (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     add_type_id INTEGER REFERENCES add_type(id),
     amount FLOAT,
     date DATE
 );
 
 CREATE TABLE debt (
-    id SERIAL PRIMARY KEY,
-    creditor VARCHAR,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    creditor TEXT,
     amount FLOAT,
     due_date DATE
 );
 
 CREATE TABLE savings (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
     amount FLOAT,
     last_updated DATE,
     percentage DECIMAL
