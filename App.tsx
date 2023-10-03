@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from 'react';
-import type {PropsWithChildren, ReactNode} from 'react';
+import type {PropsWithChildren, ReactNode } from 'react';
 import {
   Button,
   SafeAreaView,
@@ -29,6 +29,18 @@ import {
 import { Float, Int32 } from 'react-native/Libraries/Types/CodegenTypes';
 
 const App: () => ReactNode = () => {
+  let wallet : {name : String , amount: Int32} = {name : 'banker' , amount : 50.01 };
+  const [NewItem,SetItem]=useState('');
+  const [ListItem,AddItem]=useState([wallet.name +" "+ wallet.amount])
+  const InputHandler =(inputtext: React.SetStateAction<string>)=> {
+    SetItem (inputtext);
+  }
+  const AddItemToList = () => {
+      
+    AddItem(ListItem=>[...ListItem , NewItem]);
+  }
+
+
   return (
     <View style={styles.mainpage}>
       <View style={styles.head}>
@@ -37,14 +49,24 @@ const App: () => ReactNode = () => {
         </View>
         <View >
       <Text style={styles.cash}>5000.01 $</Text>
-      </View></View>
-
+      </View>
+      <View>
+      {ListItem.map ((wallet,index)=>{
+      return <Text key={index}>{index}: {wallet} </Text>
+      })}
+      </View>
+      </View>
+      
     </View>
   );
 };
 //idea for convertion function + change variable names to be similar with db
 const CurCash = (Overview:{TotalAmount:Float}) => {
 <Text>{Overview.TotalAmount} $</Text>
+}
+//front-end for reading wallets
+const WalletOverview = (wallet:{name:String,amount:Float}) => {
+
 }
 
 const styles = StyleSheet.create({
