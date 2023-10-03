@@ -29,9 +29,11 @@ import {
 import { Float, Int32 } from 'react-native/Libraries/Types/CodegenTypes';
 
 const App: () => ReactNode = () => {
-  let wallet : {name : String , amount: Int32} = {name : 'banker' , amount : 50.01 };
+ // {amount icon name id }
+ let wallet : {amount : Int32 ,icon: String,name : String , id : Int32} = {amount: 50.41 ,icon:"Image.png" ,name:"bank1" , id:1}
+//  let wallet : {name : String , amount: Int32} = {name : 'banker' , amount : 50.01 };
   const [NewItem,SetItem]=useState('');
-  const [ListItem,AddItem]=useState([wallet.name +" "+ wallet.amount])
+  const [ListItem,AddItem]=useState([wallet.amount +" "+ wallet.icon + " " + wallet.name +" " + wallet.id])
   const InputHandler =(inputtext: React.SetStateAction<string>)=> {
     SetItem (inputtext);
   }
@@ -50,13 +52,15 @@ const App: () => ReactNode = () => {
         <View >
       <Text style={styles.cash}>5000.01 $</Text>
       </View>
-      <View>
-      {ListItem.map ((wallet,index)=>{
-      return <Text key={index}>{index}: {wallet} </Text>
-      })}
-      </View>
-      </View>
       
+      </View>
+      <View style={styles.pagebody}>
+        <View style={styles.walletlist}>
+        {/* {ListItem.map ((wallet)=>{
+          return <Text style={styles.walletitem} key={wallet.id}>{wallet.id}: {wallet} </Text> 
+      })}*/}
+        </View>
+      </View>
     </View>
   );
 };
@@ -96,6 +100,23 @@ const styles = StyleSheet.create({
     fontSize : 30,
     color:"green",
   },
+  pagebody : {
+    position: 'absolute',
+    top : 150 ,
+
+  },
+  walletlist : {
+    textShadowColor : 'gray',
+    backgroundColor: 'whitesmoke',
+    width: '100%',
+    alignItems:'center',
+  },
+  walletitem : {
+    fontSize : 25 ,
+    color : 'blue' ,
+
+    
+  }
 });
 
 export default App;
