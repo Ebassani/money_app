@@ -34,6 +34,7 @@ const createTables = (db) => {
       executeQuery(db,statement);
     }
     addWallet("Example Wallet", 0, 'icon1.png');
+    addExpenseType('Miscellaneous', 'icon1.png')
     console.log('Tables created successfully.');
   } catch (error) {
     console.error('Error creating tables: ', error);
@@ -101,7 +102,15 @@ export const addExpenseType=(name, icon)=>{
 
 export const deleteExpenseType = (id) => {
   const db = openDatabase();
-  return executeQuery(db, 'DELETE FROM expense_type WHERE id=?',[id]);
+
+  // SETS THE EXOENSE TYPE TO ONE AS DEFAULT, FISRT EXPENSE_TYPE SHOULD NOT BE DELETED
+  executeQuery(db, 'UPDATE expenses SET expense_type_id=1 WHERE expense_type_id=?',[id])
+  .then(() => {
+    return executeQuery(db, 'DELETE FROM expense_type WHERE id=?',[id])
+  }).catch(error => {
+    console.log(error)
+    return reject(error);
+  })
 }
 
 export const updateExpenseType = (id, name, icon) => {
