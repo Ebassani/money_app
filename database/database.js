@@ -34,7 +34,8 @@ const createTables = (db) => {
       executeQuery(db,statement);
     }
     addWallet("Example Wallet", 0, 'icon1.png');
-    addExpenseType('Miscellaneous', 'icon1.png')
+    addExpenseType('Miscellaneous', 'icon1.png');
+    addAdditiveType('Miscellaneous', 'icon1.png');
     console.log('Tables created successfully.');
   } catch (error) {
     console.error('Error creating tables: ', error);
@@ -69,7 +70,7 @@ export const read = (tableName) => {
         resolve(items);
       })
       .catch(error => {
-        console.log(error)
+        console.log(error);
         reject(error);
       });
   });
@@ -158,4 +159,22 @@ export const deleteAdditiveType = (id) => {
 export const updateAdditiveType = (id, name, icon) => {
   const db = openDatabase();
   return executeQuery(db, 'UPDATE add_type SET name=?, icon=? WHERE id=?',[name, icon, id]);
+}
+
+// ADDITIVES FUNCTIONS
+export const addAdditive=(typeId, amount, date)=>{
+  const db = openDatabase();
+  //date format: YYYY-MM-DD
+  return executeQuery(db, 'INSERT INTO additives(add_type_id, amount, date) VALUES(?, ?, ?);', [typeId, amount, date]);
+};
+
+export const deleteAdditive = (id) => {
+  const db = openDatabase();
+  return executeQuery(db, 'DELETE FROM additives WHERE id=?',[id]);
+}
+
+export const updateAdditive = (id, typeId, amount, date) => {
+  const db = openDatabase();
+  //date format: YYYY-MM-DD
+  return executeQuery(db, 'UPDATE additives SET add_type_id=?, amount=?, date=? WHERE id=?',[typeId, amount, date, id]);
 }
