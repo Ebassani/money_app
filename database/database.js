@@ -103,7 +103,7 @@ export const addExpenseType=(name, icon)=>{
 export const deleteExpenseType = (id) => {
   const db = openDatabase();
 
-  // SETS THE EXOENSE TYPE TO ONE AS DEFAULT, FISRT EXPENSE_TYPE SHOULD NOT BE DELETED
+  // SETS THE EXPENSE TYPE TO ID=1 AS DEFAULT, ID=1 EXPENSE_TYPE SHOULD NOT BE DELETED
   executeQuery(db, 'UPDATE expenses SET expense_type_id=1 WHERE expense_type_id=?',[id])
   .then(() => {
     return executeQuery(db, 'DELETE FROM expense_type WHERE id=?',[id])
@@ -134,4 +134,28 @@ export const updateExpenses = (id, typeId, amount, date) => {
   const db = openDatabase();
   //date format: YYYY-MM-DD
   return executeQuery(db, 'UPDATE expenses SET expense_type_id=?, amount=?, date=? WHERE id=?',[typeId, amount, date, id]);
+}
+
+// ADDITIVE TYPE FUNCTIONS
+export const addAdditiveType=(name, icon)=>{
+  const db = openDatabase();
+  return executeQuery(db, 'INSERT INTO add_type(name, icon) VALUES(?,?);', [name, icon]);
+};
+
+export const deleteAdditiveType = (id) => {
+  const db = openDatabase();
+
+  // SETS THE ADDITIVE TYPE TO ID=1 AS DEFAULT, ID=1 ADD_TYPE SHOULD NOT BE DELETED
+  executeQuery(db, 'UPDATE additives SET add_type_id=1 WHERE add_type_id=?',[id])
+  .then(() => {
+    return executeQuery(db, 'DELETE FROM add_type WHERE id=?',[id])
+  }).catch(error => {
+    console.log(error)
+    return reject(error);
+  })
+}
+
+export const updateAdditiveType = (id, name, icon) => {
+  const db = openDatabase();
+  return executeQuery(db, 'UPDATE add_type SET name=?, icon=? WHERE id=?',[name, icon, id]);
 }
