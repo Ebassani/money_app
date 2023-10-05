@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import type {PropsWithChildren, ReactNode } from 'react';
 import {
   Button,
+  FlatList,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -27,22 +28,20 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import { Float, Int32 } from 'react-native/Libraries/Types/CodegenTypes';
-
+import { init, readWallets, } from './database/database';
+init();
 const App: () => ReactNode = () => {
- // {amount icon name id }
- let wallet : {amount : Int32 ,icon: String,name : String , id : Int32} = {amount: 50.41 ,icon:"Image.png" ,name:"bank1" , id:1}
-//  let wallet : {name : String , amount: Int32} = {name : 'banker' , amount : 50.01 };
-  const [NewItem,SetItem]=useState('');
-  const [ListItem,AddItem]=useState([wallet.amount +" "+ wallet.icon + " " + wallet.name +" " + wallet.id])
-  const InputHandler =(inputtext: React.SetStateAction<string>)=> {
-    SetItem (inputtext);
+  const [ListItem,SetItem]=useState();
+//  const [ListItem,AddItem]=useState([{"amount": 0, "icon": "icon1.png", "id": 1, "name": "Example Wallet"}])
+  async function ReadAllWallets () {
+   await  readWallets()
+   .then((result) => {
+       SetItem(result);
+      //console.log(result);
+   });
   }
-  const AddItemToList = () => {
-      
-    AddItem(ListItem=>[...ListItem , NewItem]);
-  }
-
-
+ ReadAllWallets();
+ //console.log(ListItem);
   return (
     <View style={styles.mainpage}>
       <View style={styles.head}>
@@ -56,22 +55,17 @@ const App: () => ReactNode = () => {
       </View>
       <View style={styles.pagebody}>
         <View style={styles.walletlist}>
-        {/* {ListItem.map ((wallet)=>{
-          return <Text style={styles.walletitem} key={wallet.id}>{wallet.id}: {wallet} </Text> 
-      })}*/}
+        <FlatList
+          data={ListItem}
+          renderItem={(item)=><View><Text>{item.item.id} {item.item.icon} {item.item.name} {item.item.amount}</Text></View>}/> 
         </View>
       </View>
     </View>
   );
 };
-//idea for convertion function + change variable names to be similar with db
-const CurCash = (Overview:{TotalAmount:Float}) => {
-<Text>{Overview.TotalAmount} $</Text>
-}
-//front-end for reading wallets
-const WalletOverview = (wallet:{name:String,amount:Float}) => {
 
-}
+
+
 
 const styles = StyleSheet.create({
   mainpage: {
