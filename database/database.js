@@ -139,6 +139,15 @@ export const addExpenses=(walletId ,typeId, amount, date)=>{
 
 export const deleteExpenses = (id) => {
   const db = openDatabase();
+
+  executeQuery(db, 'SELECT * FROM expenses WHERE id = ?', [id]).then(item=> {
+    const amount = item.rows.raw()[0].amount;
+    const wallet = item.rows.raw()[0].wallet_id;
+    
+    addToWallet(wallet, amount);
+  });
+
+
   return executeQuery(db, 'DELETE FROM expenses WHERE id=?',[id]);
 }
 
