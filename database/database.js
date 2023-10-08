@@ -178,3 +178,30 @@ export const updateAdditive = (id, typeId, amount, date) => {
   //date format: YYYY-MM-DD
   return executeQuery(db, 'UPDATE additives SET add_type_id=?, amount=?, date=? WHERE id=?',[typeId, amount, date, id]);
 }
+
+// DEBT FUNCTIONS
+export const addDebdtNoDate=(creditor, amount)=>{
+  const db = openDatabase();
+  return executeQuery(db, 'INSERT INTO debt(creditor, amount) VALUES(?, ?);', [creditor, amount]);
+};
+
+export const addDebdtDueDate=(creditor, amount, due_date)=>{
+  const db = openDatabase();
+  //date format: YYYY-MM-DD
+  return executeQuery(db, 'INSERT INTO debt(creditor, amount, due_date) VALUES(?, ?, ?);', [creditor, amount, due_date]);
+};
+
+export const updateDebtNoDate=(id, creditor, amount) => {
+  const db = openDatabase();
+  return executeQuery(db, 'UPDATE debt SET creditor=?, amount=? WHERE id=?',[creditor, amount, id]);
+}
+
+export const updateDebtDueDate=(id, creditor, amount, due_date) => {
+  const db = openDatabase();
+  return executeQuery(db, 'UPDATE debt SET creditor=?, amount=?, due_date=? WHERE id=?',[creditor, amount, due_date, id]);
+}
+
+export const deleteDebt = (id) => {
+  const db = openDatabase();
+  return executeQuery(db, 'DELETE FROM debt WHERE id=?',[id]);
+}
