@@ -157,6 +157,21 @@ export const updateExpenses = (id, walletId, typeId, amount, date) => {
   return executeQuery(db, 'UPDATE expenses SET wallet_id=?, expense_type_id=?, amount=?, date=? WHERE id=?',[walletId, typeId, amount, date, id]);
 }
 
+export const changeExpenseWallet = (expenseId, newWalletId) => {
+  const db = openDatabase();
+
+  executeQuery(db, 'SELECT * FROM expenses WHERE id = ?', [id]).then(item=> {
+    const amount = item.rows.raw()[0].amount;
+    const wallet = item.rows.raw()[0].wallet_id;
+    
+    addToWallet(wallet, amount);
+
+    removeFromWallet(newWalletId, amount)
+  });
+
+  return executeQuery(db, 'UPDATE expenses SET wallet_id=? WHERE id=?',[newWalletId, expenseId]);
+}
+
 // ADDITIVE TYPE FUNCTIONS
 export const addAdditiveType=(name, icon)=>{
   const db = openDatabase();
@@ -201,6 +216,21 @@ export const deleteAdditive = (id) => {
 
 
   return executeQuery(db, 'DELETE FROM additives WHERE id=?',[id]);
+}
+
+export const changeAdditiveWallet = (expenseId, newWalletId) => {
+  const db = openDatabase();
+
+  executeQuery(db, 'SELECT * FROM additives WHERE id = ?', [id]).then(item=> {
+    const amount = item.rows.raw()[0].amount;
+    const wallet = item.rows.raw()[0].wallet_id;
+    
+    removeFromWallet(wallet, amount);
+
+    addToWallet(newWalletId, amount)
+  });
+
+  return executeQuery(db, 'UPDATE additives SET wallet_id=? WHERE id=?',[newWalletId, expenseId]);
 }
 
 export const updateAdditive = (id, walletId, typeId, amount, date) => {
