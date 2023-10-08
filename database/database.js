@@ -95,6 +95,16 @@ export const updateWallet = (id, name, amount, icon) => {
   return executeQuery(db, 'UPDATE wallets SET name=?, amount=?, icon=? WHERE id=?',[name, amount, icon, id]);
 }
 
+const addToWallet = (id, amount) => {
+  const db = openDatabase();
+  return executeQuery(db, 'UPDATE wallets SET amount = amount + ? WHERE id=?;',[amount, id]);
+}
+
+const removeFromWallet = (id, amount) => {
+  const db = openDatabase();
+  return executeQuery(db, 'UPDATE wallets SET amount = amount - ? WHERE id=?;',[amount, id]);
+}
+
 // EXPENSE-TYPE FUNCTIONS
 export const addExpenseType=(name, icon)=>{
   const db = openDatabase();
@@ -123,6 +133,7 @@ export const updateExpenseType = (id, name, icon) => {
 export const addExpenses=(walletId ,typeId, amount, date)=>{
   const db = openDatabase();
   //date format: YYYY-MM-DD
+  removeFromWallet(walletId, amount);
   return executeQuery(db, 'INSERT INTO expenses(wallet_id, expense_type_id, amount, date) VALUES(?, ?, ?, ?);', [walletId ,typeId, amount, date]);
 };
 
@@ -165,6 +176,7 @@ export const updateAdditiveType = (id, name, icon) => {
 export const addAdditive=(walletId, typeId, amount, date)=>{
   const db = openDatabase();
   //date format: YYYY-MM-DD
+  addToWallet(walletId,amount)
   return executeQuery(db, 'INSERT INTO additives(wallet_id, add_type_id, amount, date) VALUES(?, ?, ?, ?);', [walletId, typeId, amount, date]);
 };
 
