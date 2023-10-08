@@ -191,6 +191,15 @@ export const addAdditive=(walletId, typeId, amount, date)=>{
 
 export const deleteAdditive = (id) => {
   const db = openDatabase();
+
+  executeQuery(db, 'SELECT * FROM additives WHERE id = ?', [id]).then(item=> {
+    const amount = item.rows.raw()[0].amount;
+    const wallet = item.rows.raw()[0].wallet_id;
+    
+    removeFromWallet(wallet, amount);
+  });
+
+
   return executeQuery(db, 'DELETE FROM additives WHERE id=?',[id]);
 }
 
