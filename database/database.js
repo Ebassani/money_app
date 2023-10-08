@@ -2,7 +2,7 @@ import SQLite from 'react-native-sqlite-storage';
 
 const DATABASE_NAME = 'money.db';
 
-const SQL = 'CREATE TABLE wallets ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, amount FLOAT, icon TEXT ); CREATE TABLE expense_type ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, icon TEXT ); CREATE TABLE expenses ( id INTEGER PRIMARY KEY AUTOINCREMENT, expense_type_id INTEGER REFERENCES expense_type(id), amount FLOAT, date DATE ); CREATE TABLE add_type ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, icon TEXT ); CREATE TABLE additives ( id INTEGER PRIMARY KEY AUTOINCREMENT, add_type_id INTEGER REFERENCES add_type(id), amount FLOAT, date DATE ); CREATE TABLE debt ( id INTEGER PRIMARY KEY AUTOINCREMENT, creditor TEXT, amount FLOAT, due_date DATE ); CREATE TABLE savings ( id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, amount FLOAT, last_updated DATE, percentage DECIMAL );';
+const SQL = 'CREATE TABLE wallets ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, amount FLOAT, icon TEXT ); CREATE TABLE expense_type ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, icon TEXT ); CREATE TABLE expenses ( id INTEGER PRIMARY KEY AUTOINCREMENT, expense_type_id INTEGER REFERENCES expense_type(id), amount FLOAT, date DATE, wallet_id INTEGER REFERENCES wallets(id) ); CREATE TABLE add_type ( id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, icon TEXT ); CREATE TABLE additives ( id INTEGER PRIMARY KEY AUTOINCREMENT, add_type_id INTEGER REFERENCES add_type(id), amount FLOAT, date DATE, wallet_id INTEGER REFERENCES wallets(id) ); CREATE TABLE debt ( id INTEGER PRIMARY KEY AUTOINCREMENT, creditor TEXT, amount FLOAT, due_date DATE ); CREATE TABLE savings ( id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, amount FLOAT, last_updated DATE, percentage DECIMAL );';
 
 
 // GENERAL FUNCTIONS
@@ -120,10 +120,10 @@ export const updateExpenseType = (id, name, icon) => {
 }
 
 // EXPENSE FUNCTIONS
-export const addExpenses=(typeId, amount, date)=>{
+export const addExpenses=(walletId ,typeId, amount, date)=>{
   const db = openDatabase();
   //date format: YYYY-MM-DD
-  return executeQuery(db, 'INSERT INTO expenses(expense_type_id, amount, date) VALUES(?, ?, ?);', [typeId, amount, date]);
+  return executeQuery(db, 'INSERT INTO expenses(wallet_id, expense_type_id, amount, date) VALUES(?, ?, ?, ?);', [walletId ,typeId, amount, date]);
 };
 
 export const deleteExpenses = (id) => {
@@ -131,10 +131,10 @@ export const deleteExpenses = (id) => {
   return executeQuery(db, 'DELETE FROM expenses WHERE id=?',[id]);
 }
 
-export const updateExpenses = (id, typeId, amount, date) => {
+export const updateExpenses = (id, walletId, typeId, amount, date) => {
   const db = openDatabase();
   //date format: YYYY-MM-DD
-  return executeQuery(db, 'UPDATE expenses SET expense_type_id=?, amount=?, date=? WHERE id=?',[typeId, amount, date, id]);
+  return executeQuery(db, 'UPDATE expenses SET wallet_id=?, expense_type_id=?, amount=?, date=? WHERE id=?',[walletId, typeId, amount, date, id]);
 }
 
 // ADDITIVE TYPE FUNCTIONS
@@ -162,10 +162,10 @@ export const updateAdditiveType = (id, name, icon) => {
 }
 
 // ADDITIVES FUNCTIONS
-export const addAdditive=(typeId, amount, date)=>{
+export const addAdditive=(walletId, typeId, amount, date)=>{
   const db = openDatabase();
   //date format: YYYY-MM-DD
-  return executeQuery(db, 'INSERT INTO additives(add_type_id, amount, date) VALUES(?, ?, ?);', [typeId, amount, date]);
+  return executeQuery(db, 'INSERT INTO additives(wallet_id, add_type_id, amount, date) VALUES(?, ?, ?, ?);', [walletId, typeId, amount, date]);
 };
 
 export const deleteAdditive = (id) => {
@@ -173,10 +173,10 @@ export const deleteAdditive = (id) => {
   return executeQuery(db, 'DELETE FROM additives WHERE id=?',[id]);
 }
 
-export const updateAdditive = (id, typeId, amount, date) => {
+export const updateAdditive = (id, walletId, typeId, amount, date) => {
   const db = openDatabase();
   //date format: YYYY-MM-DD
-  return executeQuery(db, 'UPDATE additives SET add_type_id=?, amount=?, date=? WHERE id=?',[typeId, amount, date, id]);
+  return executeQuery(db, 'UPDATE additives SET wallet_id=?, add_type_id=?, amount=?, date=? WHERE id=?',[walletId, typeId, amount, date, id]);
 }
 
 // DEBT FUNCTIONS
