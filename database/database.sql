@@ -15,7 +15,8 @@ CREATE TABLE expenses (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     expense_type_id INTEGER REFERENCES expense_type(id),
     amount FLOAT,
-    date DATE
+    date DATE,
+    wallet_id INTEGER REFERENCES wallets(id)
 );
 
 CREATE TABLE add_type (
@@ -28,7 +29,8 @@ CREATE TABLE additives (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     add_type_id INTEGER REFERENCES add_type(id),
     amount FLOAT,
-    date DATE
+    date DATE,
+    wallet_id INTEGER REFERENCES wallets(id)
 );
 
 CREATE TABLE debt (
