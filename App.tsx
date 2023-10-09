@@ -5,14 +5,17 @@
  * @format
  */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, { useState } from 'react';
+import type {PropsWithChildren, ReactNode } from 'react';
 import {
+  Button,
+  FlatList,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   useColorScheme,
   View,
 } from 'react-native';
@@ -24,95 +27,90 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+import { Float, Int32 } from 'react-native/Libraries/Types/CodegenTypes';
+import { init, readWallets, } from './database/database';
+init();
+const App: () => ReactNode = () => {
+  const [ListItem,SetItem]=useState();
+//  const [ListItem,AddItem]=useState([{"amount": 0, "icon": "icon1.png", "id": 1, "name": "Example Wallet"}])
+  async function ReadAllWallets () {
+   await  readWallets()
+   .then((result) => {
+       SetItem(result);
+      //console.log(result);
+   });
+  }
+ ReadAllWallets();
+ //console.log(ListItem);
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View style={styles.mainpage}>
+      <View style={styles.head}>
+        <View>
+        <Text style={styles.heading}> Current cash : </Text>
+        </View>
+        <View >
+      <Text style={styles.cash}>5000.01 $</Text>
+      </View>
+      
+      </View>
+      <View style={styles.pagebody}>
+        <View style={styles.walletlist}>
+        <FlatList
+          data={ListItem}
+          renderItem={(item)=><View><Text>{item.item.id} {item.item.icon} {item.item.name} {item.item.amount}</Text></View>}/> 
+        </View>
+      </View>
     </View>
   );
-}
+};
 
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  mainpage: {
+    
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 0 ,
+    width: '100%',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  head: {
+    flex: 1,
+    position: 'absolute',
+    top: 0,
+    width : '100%',
+    alignItems: 'center',
+    padding:30 ,
+    borderBottomWidth: 5 ,
+    borderColor:"blue",
+    borderRadius: 5 ,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  heading: {
+    fontSize: 20 ,
+    color : "blue",
   },
-  highlight: {
-    fontWeight: '700',
+  cash:{
+    fontSize : 30,
+    color:"green",
   },
+  pagebody : {
+    position: 'absolute',
+    top : 150 ,
+
+  },
+  walletlist : {
+    textShadowColor : 'gray',
+    backgroundColor: 'whitesmoke',
+    width: '100%',
+    alignItems:'center',
+  },
+  walletitem : {
+    fontSize : 25 ,
+    color : 'blue' ,
+
+    
+  }
 });
 
 export default App;
