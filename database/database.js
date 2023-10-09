@@ -87,6 +87,8 @@ export const addWallet=(name, amount, icon)=>{
 
 export const deleteWallet = (id) => {
   const db = openDatabase();
+  executeQuery(db, 'DELETE * FROM expenses WHERE walled_id = ?'[id]);
+  executeQuery(db, 'DELETE * FROM additives WHERE walled_id = ?'[id]);
   return executeQuery(db, 'DELETE FROM wallets WHERE id=?',[id]);
 }
 
@@ -103,6 +105,29 @@ const addToWallet = (id, amount) => {
 const removeFromWallet = (id, amount) => {
   const db = openDatabase();
   return executeQuery(db, 'UPDATE wallets SET amount = amount - ? WHERE id=?;',[amount, id]);
+}
+
+export const getMoney = () => {
+  const db = openDatabase();
+
+  const data = new Promise((resolve, reject) => {
+    executeQuery(db, 'SELECT amount FROM wallets ', [])
+      .then(result => {
+        const resArray = result.rows.raw()
+        let amount= 0;
+        resArray.forEach(item => {
+          amount+=item.amount;
+        });
+
+        resolve(amount);
+      })
+      .catch(error => {
+        console.log(error);
+        reject(error);
+      });
+  });
+
+  return data;
 }
 
 // EXPENSE-TYPE FUNCTIONS
