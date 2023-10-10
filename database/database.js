@@ -130,6 +130,25 @@ export const getMoney = () => {
   return data;
 }
 
+export const getWalletName = (id) => {
+  const db = openDatabase();
+
+  const data = new Promise((resolve, reject) => {
+    executeQuery(db, 'SELECT name FROM wallets WHERE id=?', [id])
+      .then(result => {
+        const name = result.rows.raw()[0].name;
+        resolve(name);
+      })
+      .catch(error => {
+        console.log(error);
+        reject(error);
+      });
+  });
+
+
+  return data;
+}
+
 // EXPENSE-TYPE FUNCTIONS
 export const addExpenseType=(name, icon)=>{
   const db = openDatabase();
