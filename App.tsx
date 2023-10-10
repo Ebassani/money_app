@@ -28,19 +28,28 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import { Float, Int32 } from 'react-native/Libraries/Types/CodegenTypes';
-import { init, readWallets, } from './database/database';
+import { init, read,getMoney,addWallet } from './database/database';
 init();
 const App: () => ReactNode = () => {
   const [ListItem,SetItem]=useState();
+  const [CashTotal,SetTCash]=useState();
 //  const [ListItem,AddItem]=useState([{"amount": 0, "icon": "icon1.png", "id": 1, "name": "Example Wallet"}])
   async function ReadAllWallets () {
-   await  readWallets()
+   await  read("wallets")
    .then((result) => {
        SetItem(result);
       //console.log(result);
    });
   }
- ReadAllWallets();
+  ReadAllWallets();
+  async function Cashdisplay() {
+    await getMoney()
+    .then((result) => {
+      SetTCash(result);
+    });
+  }
+ Cashdisplay();
+ //addWallet("New Wallet", 30, 'icon2.png');
  //console.log(ListItem);
   return (
     <View style={styles.mainpage}>
@@ -49,7 +58,7 @@ const App: () => ReactNode = () => {
         <Text style={styles.heading}> Current cash : </Text>
         </View>
         <View >
-      <Text style={styles.cash}>5000.01 $</Text>
+      <Text style={styles.cash}>{CashTotal} $  </Text>
       </View>
       
       </View>
@@ -57,7 +66,7 @@ const App: () => ReactNode = () => {
         <View style={styles.walletlist}>
         <FlatList
           data={ListItem}
-          renderItem={(item)=><View><Text>{item.item.id} {item.item.icon} {item.item.name} {item.item.amount}</Text></View>}/> 
+          renderItem={(item)=><View><Text style={styles.walletitem}>{item.item.id} {item.item.name} : {item.item.amount} {item.item.icon}  </Text></View>}/> 
         </View>
       </View>
     </View>
@@ -107,7 +116,7 @@ const styles = StyleSheet.create({
   },
   walletitem : {
     fontSize : 25 ,
-    color : 'blue' ,
+    color : 'black' ,
 
     
   }
