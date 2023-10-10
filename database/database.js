@@ -154,6 +154,25 @@ export const updateExpenseType = (id, name, icon) => {
   return executeQuery(db, 'UPDATE expense_type SET name=?, icon=? WHERE id=?',[name, icon, id]);
 }
 
+export const getExpenseType = (id) => {
+  const db = openDatabase();
+
+  const data = new Promise((resolve, reject) => {
+    executeQuery(db, 'SELECT name FROM expense_type WHERE id=?', [id])
+      .then(result => {
+        const name = result.rows.raw()[0].name;
+        resolve(name);
+      })
+      .catch(error => {
+        console.log(error);
+        reject(error);
+      });
+  });
+
+
+  return data;
+}
+
 // EXPENSE FUNCTIONS
 export const addExpenses=(walletId ,typeId, amount, date)=>{
   const db = openDatabase();
