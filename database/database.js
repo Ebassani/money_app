@@ -259,6 +259,25 @@ export const updateAdditiveType = (id, name, icon) => {
   return executeQuery(db, 'UPDATE add_type SET name=?, icon=? WHERE id=?',[name, icon, id]);
 }
 
+export const getAdditiveType = (id) => {
+  const db = openDatabase();
+
+  const data = new Promise((resolve, reject) => {
+    executeQuery(db, 'SELECT name FROM additive_type WHERE id=?', [id])
+      .then(result => {
+        const name = result.rows.raw()[0].name;
+        resolve(name);
+      })
+      .catch(error => {
+        console.log(error);
+        reject(error);
+      });
+  });
+
+
+  return data;
+}
+
 // ADDITIVES FUNCTIONS
 export const addAdditive=(walletId, typeId, amount, date)=>{
   const db = openDatabase();
