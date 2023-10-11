@@ -3,15 +3,17 @@ import React, { useState } from 'react';
 import {
     Button,
     FlatList,
+    Modal,
     SafeAreaView,
     ScrollView,
     StatusBar,
     StyleSheet,
     Text,
     TextInput,
+    TouchableOpacity,
     useColorScheme,
     View,
-  } from 'react-native';
+} from 'react-native';
 
 import { read, deleteExpenses, changeExpenseWallet, getExpenseType, getWalletName } from '../database/database';
 
@@ -27,19 +29,44 @@ export const ViewExpenses = () => {
     }
     
     readExpenses()
+
+    const [SelectedExpense, SetSelectedExpense] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+
+    const handleClick = (expense: any) => {
+        SetSelectedExpense(expense);
+        console.log(expense);
+        
+    }
     
     return ( 
         <View>
             <ScrollView>
-                {Expenses.map((item, index)=>{
-                return <PriceExpense expense={item} key={index} />
+                {Expenses.map((item: any, index)=>{
+                return (
+                    <TouchableOpacity key={index} onPress={()=> {
+                        handleClick(item);
+                        setShowModal(!showModal);
+                    }}>
+                        <PriceExpense expense={item} />
+                    </TouchableOpacity>
+                )
                 })}
             </ScrollView>
+
+            <Modal visible={showModal}>
+                <View>
+                    <Text>{(SelectedExpense as any)?.amount}</Text>
+                    <TouchableOpacity onPress={() => setShowModal(!showModal)}>
+                        <Text>Close</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
         </View>
     )
 }
 
-const PriceExpense = (data: any, key: any) => {
+const PriceExpense = (data: any) => {
     const [Type,SetType]=useState('');
     const [Wallet,SetWallet]=useState('');
 
@@ -55,7 +82,7 @@ const PriceExpense = (data: any, key: any) => {
     readValues()
 
     return (
-        <View key={key}>
+        <View>
             <View>
                 <Text>{Type}</Text>
                 <Text>{Wallet}</Text>
