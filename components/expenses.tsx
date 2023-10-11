@@ -15,7 +15,7 @@ import {
     View,
 } from 'react-native';
 
-import { read, deleteExpenses, changeExpenseWallet, getExpenseType, getWalletName, chaneExpenseAmount } from '../database/database';
+import { read, deleteExpenses, getExpenseType, getWalletName, changeExpenseAmount } from '../database/database';
 
 export const ViewExpenses = () => {
     const [Expenses,SetExpenses]=useState([]);
@@ -79,7 +79,7 @@ export const ViewExpenses = () => {
                         <Text>Delete</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
-                        chaneExpenseAmount((SelectedExpense as any)?.id, modalAmount)
+                        changeExpenseAmount((SelectedExpense as any)?.id, modalAmount)
                         setShowModal(!showModal)}
                     }>
                         <Text>Update</Text>

@@ -235,7 +235,7 @@ export const changeExpenseWallet = (expenseId, newWalletId) => {
   return executeQuery(db, 'UPDATE expenses SET wallet_id=? WHERE id=?',[newWalletId, expenseId]);
 }
 
-export const chaneExpenseAmount = (expenseId, newAmount) => {
+export const changeExpenseAmount = (expenseId, newAmount) => {
   const db = openDatabase();
 
   executeQuery(db, 'SELECT * FROM expenses WHERE id = ?', [expenseId]).then(item=> {
@@ -335,6 +335,22 @@ export const updateAdditive = (id, walletId, typeId, amount, date) => {
   const db = openDatabase();
   //date format: YYYY-MM-DD
   return executeQuery(db, 'UPDATE additives SET wallet_id=?, add_type_id=?, amount=?, date=? WHERE id=?',[walletId, typeId, amount, date, id]);
+}
+
+export const changeAdditiveAmount = (additiveId, newAmount) => {
+  const db = openDatabase();
+
+  executeQuery(db, 'SELECT * FROM additives WHERE id = ?', [additiveId]).then(item=> {
+    const amount = item.rows.raw()[0].amount;
+    const wallet = item.rows.raw()[0].wallet_id;
+    
+    removeFromWallet(wallet, amount);
+    
+    addToWallet(wallet, newAmount)
+  });
+
+
+  return executeQuery(db, 'UPDATE additives SET amount=? WHERE id=?',[newAmount, additiveId]);
 }
 
 // DEBT FUNCTIONS

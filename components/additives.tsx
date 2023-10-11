@@ -15,7 +15,7 @@ import {
     View,
 } from 'react-native';
 
-import { read, deleteExpenses, changeExpenseWallet, getExpenseType, getWalletName, deleteAdditive } from '../database/database';
+import { read, getExpenseType, getWalletName, deleteAdditive, changeAdditiveAmount } from '../database/database';
 
 export const ViewAdditives = () => {
     const [Additives,SetAdditives]=useState([]);
@@ -35,6 +35,13 @@ export const ViewAdditives = () => {
     const handleClick = (expense: any) => {
         SetSelectedAdditive(expense);
     }
+
+    const [modalAmount, setModalAmount] = useState(0);
+
+    const handleInputChange = (value:any) => {
+        const parsedValue = parseFloat(value) || 0;
+        setModalAmount(parsedValue);
+    };
     
     return ( 
         <View>
@@ -44,6 +51,7 @@ export const ViewAdditives = () => {
                     <TouchableOpacity key={index} onPress={()=> {
                         handleClick(item);
                         setShowModal(!showModal);
+                        handleInputChange(item.amount);
                     }}>
                         <PriceAdditive additive={item} />
                     </TouchableOpacity>
@@ -53,7 +61,11 @@ export const ViewAdditives = () => {
 
             <Modal visible={showModal}>
                 <View>
-                    <Text>{(SelectedAdditive as any)?.amount}</Text>
+                    <TextInput placeholder="Fish breed..." 
+                        onChangeText={handleInputChange}
+                        value={modalAmount.toString()}
+                        keyboardType="numeric"
+                    />
                     <TouchableOpacity onPress={() => setShowModal(!showModal)}>
                         <Text>Close</Text>
                     </TouchableOpacity>
@@ -63,6 +75,12 @@ export const ViewAdditives = () => {
                             setShowModal(!showModal);
                         }}>
                         <Text>Delete</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
+                        changeAdditiveAmount((SelectedAdditive as any)?.id, modalAmount)
+                        setShowModal(!showModal)}
+                    }>
+                        <Text>Update</Text>
                     </TouchableOpacity>
                 </View>
             </Modal>
