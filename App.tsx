@@ -124,6 +124,8 @@ async function ReadAllWallets () {
       <View>
         <Button title='New wallet' onPress={ModalON}></Button>
         </View>
+        <ViewExpenses />
+        <ViewAdditives />
       </View>
       <View style={styles.pagebody}>
         <Modal visible={AddMode}  animationType='slide'>
