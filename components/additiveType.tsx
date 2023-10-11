@@ -21,18 +21,11 @@ export const ViewAdditiveTypes = (walletId: any) => {
     const [Types,SetTypes]=useState([]);
 
     async function readTypes() {
-        console.log('hello');
-        
-
         await  read('add_type')
         .then((result) => {
-            console.log(result);
-            console.log('inside');
-            
             SetTypes(result);
+            console.log(Types);
         });
-        
-        console.log(Types);
         
     }
     
@@ -96,7 +89,7 @@ const AdditiveTypes = (data: any) => {
 
     const type = data.type;
 
-    //console.log(data);
+    console.log(data);
     
 
     async function readValues() {
