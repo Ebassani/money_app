@@ -15,7 +15,7 @@ import {
     View,
 } from 'react-native';
 
-import { read, deleteExpenses, changeExpenseWallet, getExpenseType, getWalletName } from '../database/database';
+import { read, deleteExpenses, changeExpenseWallet, getExpenseType, getWalletName, chaneExpenseAmount } from '../database/database';
 
 export const ViewExpenses = () => {
     const [Expenses,SetExpenses]=useState([]);
@@ -36,6 +36,14 @@ export const ViewExpenses = () => {
     const handleClick = (expense: any) => {
         SetSelectedExpense(expense);
     }
+
+    const [modalAmount, setModalAmount] = useState(0);
+
+    const handleInputChange = (value:any) => {
+        const parsedValue = parseFloat(value) || 0;
+        setModalAmount(parsedValue);
+    };
+
     
     return ( 
         <View>
@@ -45,6 +53,7 @@ export const ViewExpenses = () => {
                     <TouchableOpacity key={index} onPress={()=> {
                         handleClick(item);
                         setShowModal(!showModal);
+                        handleInputChange(item.amount);
                     }}>
                         <PriceExpense expense={item} />
                     </TouchableOpacity>
@@ -54,7 +63,11 @@ export const ViewExpenses = () => {
 
             <Modal visible={showModal}>
                 <View>
-                    <Text>{(SelectedExpense as any)?.amount}</Text>
+                    <TextInput placeholder="Fish breed..." 
+                        onChangeText={handleInputChange}
+                        value={modalAmount.toString()}
+                        keyboardType="numeric"
+                        />
                     <TouchableOpacity onPress={() => setShowModal(!showModal)}>
                         <Text>Close</Text>
                     </TouchableOpacity>
@@ -64,6 +77,12 @@ export const ViewExpenses = () => {
                             setShowModal(!showModal);
                         }}>
                         <Text>Delete</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
+                        chaneExpenseAmount((SelectedExpense as any)?.id, modalAmount)
+                        setShowModal(!showModal)}
+                    }>
+                        <Text>Update</Text>
                     </TouchableOpacity>
                 </View>
             </Modal>
