@@ -192,6 +192,29 @@ export const getExpenseType = (id) => {
   return data;
 }
 
+export const getAmountExpenseType = (expenseTypeId) => {
+  const db = openDatabase();
+
+  const data = new Promise((resolve, reject) => {
+    executeQuery(db, 'SELECT amount FROM expenses WHERE expense_type_id=? ', [expenseTypeId])
+      .then(result => {
+        const resArray = result.rows.raw()
+        let amount= 0;
+        resArray.forEach(item => {
+          amount+=item.amount;
+        });
+
+        resolve(amount);
+      })
+      .catch(error => {
+        console.log(error);
+        reject(error);
+      });
+  });
+
+  return data;
+}
+
 // EXPENSE FUNCTIONS
 export const addExpenses=(walletId ,typeId, amount, date)=>{
   const db = openDatabase();
@@ -235,6 +258,22 @@ export const changeExpenseWallet = (expenseId, newWalletId) => {
   return executeQuery(db, 'UPDATE expenses SET wallet_id=? WHERE id=?',[newWalletId, expenseId]);
 }
 
+export const changeExpenseAmount = (expenseId, newAmount) => {
+  const db = openDatabase();
+
+  executeQuery(db, 'SELECT * FROM expenses WHERE id = ?', [expenseId]).then(item=> {
+    const amount = item.rows.raw()[0].amount;
+    const wallet = item.rows.raw()[0].wallet_id;
+    
+    addToWallet(wallet, amount);
+
+    removeFromWallet(wallet, newAmount)
+  });
+
+
+  return executeQuery(db, 'UPDATE expenses SET amount=? WHERE id=?',[newAmount, expenseId]);
+}
+
 // ADDITIVE TYPE FUNCTIONS
 export const addAdditiveType=(name, icon)=>{
   const db = openDatabase();
@@ -257,6 +296,48 @@ export const deleteAdditiveType = (id) => {
 export const updateAdditiveType = (id, name, icon) => {
   const db = openDatabase();
   return executeQuery(db, 'UPDATE add_type SET name=?, icon=? WHERE id=?',[name, icon, id]);
+}
+
+export const getAdditiveType = (id) => {
+  const db = openDatabase();
+
+  const data = new Promise((resolve, reject) => {
+    executeQuery(db, 'SELECT name FROM add_type WHERE id=?', [id])
+      .then(result => {
+        const name = result.rows.raw()[0].name;
+        resolve(name);
+      })
+      .catch(error => {
+        console.log(error);
+        reject(error);
+      });
+  });
+
+
+  return data;
+}
+
+export const getAmountAdditiveType = (addTypeId) => {
+  const db = openDatabase();
+
+  const data = new Promise((resolve, reject) => {
+    executeQuery(db, 'SELECT amount FROM additives WHERE add_type_id=? ', [addTypeId])
+      .then(result => {
+        const resArray = result.rows.raw()
+        let amount= 0;
+        resArray.forEach(item => {
+          amount+=item.amount;
+        });
+
+        resolve(amount);
+      })
+      .catch(error => {
+        console.log(error);
+        reject(error);
+      });
+  });
+
+  return data;
 }
 
 // ADDITIVES FUNCTIONS
@@ -300,6 +381,22 @@ export const updateAdditive = (id, walletId, typeId, amount, date) => {
   const db = openDatabase();
   //date format: YYYY-MM-DD
   return executeQuery(db, 'UPDATE additives SET wallet_id=?, add_type_id=?, amount=?, date=? WHERE id=?',[walletId, typeId, amount, date, id]);
+}
+
+export const changeAdditiveAmount = (additiveId, newAmount) => {
+  const db = openDatabase();
+
+  executeQuery(db, 'SELECT * FROM additives WHERE id = ?', [additiveId]).then(item=> {
+    const amount = item.rows.raw()[0].amount;
+    const wallet = item.rows.raw()[0].wallet_id;
+    
+    removeFromWallet(wallet, amount);
+    
+    addToWallet(wallet, newAmount)
+  });
+
+
+  return executeQuery(db, 'UPDATE additives SET amount=? WHERE id=?',[newAmount, additiveId]);
 }
 
 // DEBT FUNCTIONS

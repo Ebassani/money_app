@@ -5,17 +5,20 @@
  * @format
  */
 
-import React, { useState } from 'react';
-import type {PropsWithChildren, ReactNode } from 'react';
+import React, {useState} from 'react';
+import type {PropsWithChildren, ReactNode} from 'react';
 import {
   Button,
   FlatList,
+  Modal,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   useColorScheme,
   View,
 } from 'react-native';
@@ -27,90 +30,246 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import { Float, Int32 } from 'react-native/Libraries/Types/CodegenTypes';
-import { init, readWallets, } from './database/database';
+import {Float, Int32} from 'react-native/Libraries/Types/CodegenTypes';
+import {
+  addAdditive,
+  addExpenses,
+  init,
+  read,
+  getMoney,
+  addWallet,
+  updateWallet,
+  deleteWallet,
+} from './database/database';
+import {ViewExpenses} from './components/expenses';
+import {ViewAdditives} from './components/additives';
+import { ViewAdditiveTypes } from './components/additiveType';
+import { ViewExpenseTypes } from './components/expenseType';
 init();
 const App: () => ReactNode = () => {
-  const [ListItem,SetItem]=useState();
-//  const [ListItem,AddItem]=useState([{"amount": 0, "icon": "icon1.png", "id": 1, "name": "Example Wallet"}])
-  async function ReadAllWallets () {
-   await  readWallets()
-   .then((result) => {
-       SetItem(result);
+  const [AddMode, SwapAddMode] = useState(false);
+  const [EditMode, SwapEditMode] = useState(false);
+  const [FormOutput, GetForm] = useState();
+  const [ListItem, SetItem] = useState([]);
+  const [CashTotal, SetTCash] = useState();
+  const [WalletName, SetName] = useState('');
+  const [WalletAmount, SetAmount] = useState(0);
+  const [CurrID, SetCurID] = useState(0);
+  
+  const Formhandler = (forminput: any) => {
+    GetForm(forminput);
+    //console.log(forminput)
+  };
+  const Namelock = (name: string) => {
+    SetName(name);
+  };
+  const Amountlock = (amount: string) => {
+    SetAmount(+amount);
+  };
+  async function ReadAllWallets() {
+    await read('wallets').then(result => {
+      SetItem(result);
       //console.log(result);
-   });
+    });
   }
- ReadAllWallets();
- //console.log(ListItem);
+  ReadAllWallets();
+  async function Cashdisplay() {
+    await getMoney().then(result => {
+      SetTCash(result);
+    });
+  }
+  Cashdisplay();
+  async function Insertwallet() {
+    addWallet(WalletName, WalletAmount, 'WalletIcon');
+  }
+  async function EditAWallet(
+    id: number,
+    name: Text,
+    amount: number,
+  ) {
+    updateWallet(id, name, amount, 'WalletIcon');
+  }
+  const ModalON = () => {
+    SwapAddMode(true);
+  };
+  const ModalOFF = () => {
+    SwapAddMode(false);
+    SwapEditMode(false);
+  };
+  const EnableEdit = () => {
+    SwapEditMode(true);
+  };
+
+  async function EditPrepare(
+    id: number,
+    name: string,
+    amount: number,
+  ) {
+    SetName(name);
+    SetAmount(Number);
+    SetCurID(id);
+    SwapEditMode(true);
+  }
+
+  async function Stash() {
+    updateWallet(CurrID, WalletName, WalletAmount);
+  }
+
+  async function DeletePrep(id: number) {
+    SetCurID(id);
+    deleteWallet(CurrID);
+  }
+
+
+  const [AdditiveTypeModal, SetAdditiveTypeModal] = useState(false)
+  const [ExpenseTypeModal, SetExpenseTypeModal] = useState(false)
+  const [SelectedWallet, SetSelectedWallet] = useState(0)
+  
   return (
     <View style={styles.mainpage}>
       <View style={styles.head}>
         <View>
-        <Text style={styles.heading}> Current cash : </Text>
+          <Text style={styles.heading}> Current cash : </Text>
         </View>
-        <View >
-      <Text style={styles.cash}>5000.01 $</Text>
-      </View>
-      
+        <View>
+          <Text style={styles.cash}>{CashTotal} $ </Text>
+        </View>
+        <View>
+          <Button title="Add wallet" onPress={ModalON}></Button>
+        </View>
       </View>
       <View style={styles.pagebody}>
+        <Modal visible={AddMode} animationType="slide">
+          <View style={styles.fields}>
+            <TextInput placeholder="name" onChangeText={Namelock} />
+            <TextInput placeholder="amount" onChangeText={Amountlock} />
+            <Button title="Add wallet" onPress={Insertwallet}></Button>
+            <Button title="Cancel" onPress={ModalOFF}></Button>
+          </View>
+        </Modal>
+
+        <Modal visible={EditMode} animationType="slide">
+          <View style={styles.fields}>
+            <TextInput
+              placeholder="name"
+              onChangeText={Namelock}
+              value={WalletName}
+            />
+            <TextInput
+              placeholder="amount"
+              onChangeText={Amountlock}
+              value={WalletAmount.toString()}
+            />
+            <Button title="confirm edit" onPress={Stash}></Button>
+            <Button title="Cancel" onPress={ModalOFF}></Button>
+          </View>
+        </Modal>
+
+
         <View style={styles.walletlist}>
-        <FlatList
-          data={ListItem}
-          renderItem={(item)=><View><Text>{item.item.id} {item.item.icon} {item.item.name} {item.item.amount}</Text></View>}/> 
+          <ScrollView
+            style={styles.scrolllist}
+            contentContainerStyle={styles.walletlist}>
+            {ListItem.map((item: any, index) => {
+              return (
+                <View key={index}>
+                  <TouchableOpacity
+                      onLongPress={() => EditPrepare(item.id, item.name, item.amount)}
+                      onPress={() =>
+                        EditPrepare(item.id, item.name, item.amount)
+                      }>
+                        <Text style={styles.walletitem}>
+                          {item.name} {item.amount}{' '}
+                        </Text>
+                  
+                    </TouchableOpacity>
+                  <TouchableOpacity onPress={() => {
+                    SetAdditiveTypeModal(!AdditiveTypeModal);
+                    SetSelectedWallet(item.id);
+                    }}><Text>Add</Text></TouchableOpacity>
+                  <TouchableOpacity onPress={() => {
+                    SetExpenseTypeModal(!ExpenseTypeModal);
+                    SetSelectedWallet(item.id);
+                    }}><Text>Spend</Text></TouchableOpacity>
+                </View>
+              );
+            })}
+          </ScrollView>
+
+          <Modal visible={AdditiveTypeModal}>
+            <ViewAdditiveTypes  walletId={SelectedWallet} />
+
+            <TouchableOpacity onPress={() => SetAdditiveTypeModal(!AdditiveTypeModal)}>
+              <Text>Close</Text>
+            </TouchableOpacity>
+          </Modal>
+          <Modal visible={ExpenseTypeModal}>
+            <ViewExpenseTypes  walletId={SelectedWallet} />
+
+            <TouchableOpacity onPress={() => SetExpenseTypeModal(!ExpenseTypeModal)}>
+              <Text>Close</Text>
+            </TouchableOpacity>
+          </Modal>
+
         </View>
       </View>
     </View>
   );
 };
 
-
-
-
 const styles = StyleSheet.create({
   mainpage: {
-    
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 0 ,
+    margin: 0,
     width: '100%',
   },
   head: {
     flex: 1,
     position: 'absolute',
     top: 0,
-    width : '100%',
+    width: '100%',
     alignItems: 'center',
-    padding:30 ,
-    borderBottomWidth: 5 ,
-    borderColor:"blue",
-    borderRadius: 5 ,
+    padding: 30,
+    borderBottomWidth: 5,
+    borderColor: 'blue',
+    borderRadius: 5,
   },
   heading: {
-    fontSize: 20 ,
-    color : "blue",
+    fontSize: 20,
+    color: 'blue',
   },
-  cash:{
-    fontSize : 30,
-    color:"green",
+  cash: {
+    fontSize: 30,
+    color: 'green',
   },
-  pagebody : {
+  pagebody: {
+    flex: 2,
     position: 'absolute',
-    top : 150 ,
-
+    top: 150,
   },
-  walletlist : {
-    textShadowColor : 'gray',
+  walletlist: {
+    flex: 1,
+    textShadowColor: 'gray',
     backgroundColor: 'whitesmoke',
     width: '100%',
-    alignItems:'center',
+    alignItems: 'center',
   },
-  walletitem : {
-    fontSize : 25 ,
-    color : 'blue' ,
-
-    
-  }
+  scrolllist: {
+    flexGrow: 1,
+  },
+  walletitem: {
+    fontSize: 20,
+    color: 'black',
+  },
+  fields: {
+    width: '100%',
+  },
+  buttons: {
+    width: 100,
+    alignSelf: 'center',
+  },
 });
 
 export default App;

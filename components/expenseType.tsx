@@ -15,26 +15,26 @@ import {
     View,
 } from 'react-native';
 
-import { read, deleteExpenses, getExpenseType, getWalletName, changeExpenseAmount } from '../database/database';
+import { read, addExpenses, getAmountExpenseType } from '../database/database';
 
-export const ViewExpenses = () => {
-    const [Expenses,SetExpenses]=useState([]);
+export const ViewExpenseTypes = (walletId: any) => {
+    const [Types,SetTypes]=useState([]);
 
-    async function readExpenses() {
-        await  read('expenses')
+    async function readTypes() {
+        await  read('expense_type')
         .then((result) => {
-            SetExpenses(result);
+            SetTypes(result);
         });
     
     }
     
-    readExpenses()
+    readTypes()
 
-    const [SelectedExpense, SetSelectedExpense] = useState(null);
+    const [SelectedType, SetSelectedType] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
-    const handleClick = (expense: any) => {
-        SetSelectedExpense(expense);
+    const handleClick = (type: any) => {
+        SetSelectedType(type);
     }
 
     const [modalAmount, setModalAmount] = useState(0);
@@ -48,14 +48,14 @@ export const ViewExpenses = () => {
     return ( 
         <View>
             <ScrollView>
-                {Expenses.map((item: any, index)=>{
+                {Types.map((item: any, index)=>{
                 return (
                     <TouchableOpacity key={index} onPress={()=> {
                         handleClick(item);
                         setShowModal(!showModal);
-                        handleInputChange(item.amount);
+                        handleInputChange(0);
                     }}>
-                        <PriceExpense expense={item} />
+                        <ExpenseTypes type={item} />
                     </TouchableOpacity>
                 )
                 })}
@@ -72,17 +72,10 @@ export const ViewExpenses = () => {
                         <Text>Close</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
-                            deleteExpenses((SelectedExpense as any)?.id);
-                            readExpenses();
-                            setShowModal(!showModal);
-                        }}>
-                        <Text>Delete</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {
-                        changeExpenseAmount((SelectedExpense as any)?.id, modalAmount)
+                        addExpenses(walletId,(SelectedType as any)?.id, modalAmount, getCurrentDate())
                         setShowModal(!showModal)}
                     }>
-                        <Text>Update</Text>
+                        <Text>Confirm</Text>
                     </TouchableOpacity>
                 </View>
             </Modal>
@@ -90,30 +83,23 @@ export const ViewExpenses = () => {
     )
 }
 
-const PriceExpense = (data: any) => {
-    const [Type,SetType]=useState('');
-    const [Wallet,SetWallet]=useState('');
+const ExpenseTypes = (data: any) => {
+    const [TotalAmount,SetTotalAmount]=useState(0);
 
-    const expense = data.expense
+    const type = data.type;
 
     async function readValues() {
-        await getExpenseType(expense.expense_type_id).then(type => { 
-            SetType(type);
+        await getAmountExpenseType(type.id).then(type => { 
+            SetTotalAmount(type);
         });
-        await getWalletName(expense.wallet_id).then(wallet => SetWallet(wallet));
     }
     
     readValues()
 
     return (
         <View style={[styles.expense, styles.row]}>
-            <View>
-                <Text>{Type}</Text>
-                <Text>{Wallet}</Text>
-            </View>
-            <View style={styles.money}>
-                <Text style={styles.red}>- {expense.amount} €</Text>
-            </View>
+            <Text>{type.name}</Text>
+            <Text>{TotalAmount}</Text>
         </View>
     );
 }
@@ -136,3 +122,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     }
 });
+
+
+function getCurrentDate(): string {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');  // Months are zero-based
+    const day = String(currentDate.getDate()).padStart(2, '0');
+  
+    return `${year}-${month}-${day}`;
+  }

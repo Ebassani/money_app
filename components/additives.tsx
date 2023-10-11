@@ -15,26 +15,25 @@ import {
     View,
 } from 'react-native';
 
-import { read, deleteExpenses, getExpenseType, getWalletName, changeExpenseAmount } from '../database/database';
+import { read, getWalletName, deleteAdditive, changeAdditiveAmount, getAdditiveType } from '../database/database';
 
-export const ViewExpenses = () => {
-    const [Expenses,SetExpenses]=useState([]);
+export const ViewAdditives = () => {
+    const [Additives,SetAdditives]=useState([]);
 
-    async function readExpenses() {
-        await  read('expenses')
+    async function readAdditive() {
+        await  read('additives')
         .then((result) => {
-            SetExpenses(result);
+            SetAdditives(result);
         });
-    
     }
     
-    readExpenses()
+    readAdditive()
 
-    const [SelectedExpense, SetSelectedExpense] = useState(null);
+    const [SelectedAdditive, SetSelectedAdditive] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
     const handleClick = (expense: any) => {
-        SetSelectedExpense(expense);
+        SetSelectedAdditive(expense);
     }
 
     const [modalAmount, setModalAmount] = useState(0);
@@ -43,19 +42,18 @@ export const ViewExpenses = () => {
         const parsedValue = parseFloat(value) || 0;
         setModalAmount(parsedValue);
     };
-
     
     return ( 
         <View>
             <ScrollView>
-                {Expenses.map((item: any, index)=>{
+                {Additives.map((item: any, index)=>{
                 return (
                     <TouchableOpacity key={index} onPress={()=> {
                         handleClick(item);
                         setShowModal(!showModal);
                         handleInputChange(item.amount);
                     }}>
-                        <PriceExpense expense={item} />
+                        <PriceAdditive additive={item} />
                     </TouchableOpacity>
                 )
                 })}
@@ -67,19 +65,19 @@ export const ViewExpenses = () => {
                         onChangeText={handleInputChange}
                         value={modalAmount.toString()}
                         keyboardType="numeric"
-                        />
+                    />
                     <TouchableOpacity onPress={() => setShowModal(!showModal)}>
                         <Text>Close</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
-                            deleteExpenses((SelectedExpense as any)?.id);
-                            readExpenses();
+                            deleteAdditive((SelectedAdditive as any)?.id);
+                            readAdditive();
                             setShowModal(!showModal);
                         }}>
                         <Text>Delete</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
-                        changeExpenseAmount((SelectedExpense as any)?.id, modalAmount)
+                        changeAdditiveAmount((SelectedAdditive as any)?.id, modalAmount)
                         setShowModal(!showModal)}
                     }>
                         <Text>Update</Text>
@@ -90,17 +88,17 @@ export const ViewExpenses = () => {
     )
 }
 
-const PriceExpense = (data: any) => {
+const PriceAdditive = (data: any) => {
     const [Type,SetType]=useState('');
     const [Wallet,SetWallet]=useState('');
 
-    const expense = data.expense
+    const additive = data.additive
 
     async function readValues() {
-        await getExpenseType(expense.expense_type_id).then(type => { 
+        await getAdditiveType(additive.add_type_id).then(type => { 
             SetType(type);
         });
-        await getWalletName(expense.wallet_id).then(wallet => SetWallet(wallet));
+        await getWalletName(additive.wallet_id).then(wallet => SetWallet(wallet));
     }
     
     readValues()
@@ -112,9 +110,10 @@ const PriceExpense = (data: any) => {
                 <Text>{Wallet}</Text>
             </View>
             <View style={styles.money}>
-                <Text style={styles.red}>- {expense.amount} €</Text>
+                <Text style={styles.green}>+ {additive.amount} €</Text>
             </View>
         </View>
+        
     );
 }
 
@@ -128,8 +127,8 @@ const styles = StyleSheet.create({
     row: {
         flexDirection:'row'
     },
-    red: {
-        color: 'red'
+    green: {
+        color: 'green'
     },
     money: {
         flex: 0,
