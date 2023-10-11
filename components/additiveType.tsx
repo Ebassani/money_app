@@ -15,25 +15,34 @@ import {
     View,
 } from 'react-native';
 
-import { read, getWalletName, deleteAdditive, changeAdditiveAmount, getAdditiveType } from '../database/database';
+import { read, getAmountAdditiveType, addAdditive } from '../database/database';
 
-export const ViewAdditives = () => {
-    const [Additives,SetAdditives]=useState([]);
+export const ViewAdditiveTypes = (walletId: any) => {
+    const [Types,SetTypes]=useState([]);
 
-    async function readAdditive() {
-        await  read('additives')
+    async function readTypes() {
+        console.log('hello');
+        
+
+        await  read('add_type')
         .then((result) => {
-            SetAdditives(result);
+            console.log(result);
+            console.log('inside');
+            
+            SetTypes(result);
         });
+        
+        console.log(Types);
+        
     }
     
-    readAdditive()
+    readTypes()
 
-    const [SelectedAdditive, SetSelectedAdditive] = useState(null);
+    const [SelectedType, SetSelectedType] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
-    const handleClick = (expense: any) => {
-        SetSelectedAdditive(expense);
+    const handleClick = (type: any) => {
+        SetSelectedType(type);
     }
 
     const [modalAmount, setModalAmount] = useState(0);
@@ -42,18 +51,19 @@ export const ViewAdditives = () => {
         const parsedValue = parseFloat(value) || 0;
         setModalAmount(parsedValue);
     };
+
     
     return ( 
         <View>
             <ScrollView>
-                {Additives.map((item: any, index)=>{
+                {Types.map((item: any, index)=>{
                 return (
                     <TouchableOpacity key={index} onPress={()=> {
                         handleClick(item);
                         setShowModal(!showModal);
-                        handleInputChange(item.amount);
+                        handleInputChange(0);
                     }}>
-                        <PriceAdditive additive={item} />
+                        <AdditiveTypes type={item} />
                     </TouchableOpacity>
                 )
                 })}
@@ -65,22 +75,15 @@ export const ViewAdditives = () => {
                         onChangeText={handleInputChange}
                         value={modalAmount.toString()}
                         keyboardType="numeric"
-                    />
+                        />
                     <TouchableOpacity onPress={() => setShowModal(!showModal)}>
                         <Text>Close</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
-                            deleteAdditive((SelectedAdditive as any)?.id);
-                            readAdditive();
-                            setShowModal(!showModal);
-                        }}>
-                        <Text>Delete</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {
-                        changeAdditiveAmount((SelectedAdditive as any)?.id, modalAmount)
+                        addAdditive(walletId,(SelectedType as any)?.id, modalAmount, getCurrentDate())
                         setShowModal(!showModal)}
                     }>
-                        <Text>Update</Text>
+                        <Text>Confirm</Text>
                     </TouchableOpacity>
                 </View>
             </Modal>
@@ -88,32 +91,27 @@ export const ViewAdditives = () => {
     )
 }
 
-const PriceAdditive = (data: any) => {
-    const [Type,SetType]=useState('');
-    const [Wallet,SetWallet]=useState('');
+const AdditiveTypes = (data: any) => {
+    const [TotalAmount,SetTotalAmount]=useState(0);
 
-    const additive = data.additive
+    const type = data.type;
+
+    //console.log(data);
+    
 
     async function readValues() {
-        await getAdditiveType(additive.add_type_id).then(type => { 
-            SetType(type);
+        await getAmountAdditiveType(type.id).then(type => { 
+            SetTotalAmount(type);
         });
-        await getWalletName(additive.wallet_id).then(wallet => SetWallet(wallet));
     }
     
     readValues()
 
     return (
         <View style={[styles.expense, styles.row]}>
-            <View>
-                <Text>{Type}</Text>
-                <Text>{Wallet}</Text>
-            </View>
-            <View style={styles.money}>
-                <Text style={styles.green}>+ {additive.amount} €</Text>
-            </View>
+            <Text>{type.name}</Text>
+            <Text>{TotalAmount}</Text>
         </View>
-        
     );
 }
 
@@ -127,11 +125,21 @@ const styles = StyleSheet.create({
     row: {
         flexDirection:'row'
     },
-    green: {
-        color: 'green'
+    red: {
+        color: 'red'
     },
     money: {
         flex: 0,
         justifyContent: 'center',
     }
 });
+
+
+function getCurrentDate(): string {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');  // Months are zero-based
+    const day = String(currentDate.getDate()).padStart(2, '0');
+  
+    return `${year}-${month}-${day}`;
+  }

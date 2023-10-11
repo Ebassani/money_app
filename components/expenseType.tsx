@@ -15,7 +15,7 @@ import {
     View,
 } from 'react-native';
 
-import { read, deleteExpenses, getExpenseType, getWalletName, changeExpenseAmount, addExpenses, getAmountExpenseType } from '../database/database';
+import { read, addExpenses, getAmountExpenseType } from '../database/database';
 
 export const ViewExpenseTypes = (walletId: any) => {
     const [Types,SetTypes]=useState([]);
@@ -63,7 +63,7 @@ export const ViewExpenseTypes = (walletId: any) => {
 
             <Modal visible={showModal}>
                 <View>
-                    <TextInput placeholder="Fish breed..." 
+                    <TextInput 
                         onChangeText={handleInputChange}
                         value={modalAmount.toString()}
                         keyboardType="numeric"

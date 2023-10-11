@@ -302,7 +302,7 @@ export const getAdditiveType = (id) => {
   const db = openDatabase();
 
   const data = new Promise((resolve, reject) => {
-    executeQuery(db, 'SELECT name FROM additive_type WHERE id=?', [id])
+    executeQuery(db, 'SELECT name FROM add_type WHERE id=?', [id])
       .then(result => {
         const name = result.rows.raw()[0].name;
         resolve(name);
@@ -313,6 +313,29 @@ export const getAdditiveType = (id) => {
       });
   });
 
+
+  return data;
+}
+
+export const getAmountAdditiveType = (addTypeId) => {
+  const db = openDatabase();
+
+  const data = new Promise((resolve, reject) => {
+    executeQuery(db, 'SELECT amount FROM additives WHERE add_type_id=? ', [addTypeId])
+      .then(result => {
+        const resArray = result.rows.raw()
+        let amount= 0;
+        resArray.forEach(item => {
+          amount+=item.amount;
+        });
+
+        resolve(amount);
+      })
+      .catch(error => {
+        console.log(error);
+        reject(error);
+      });
+  });
 
   return data;
 }
