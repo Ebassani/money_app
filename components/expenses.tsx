@@ -63,7 +63,7 @@ export const ViewExpenses = () => {
 
             <Modal visible={showModal}>
                 <View>
-                    <TextInput placeholder="Fish breed..." 
+                    <TextInput 
                         onChangeText={handleInputChange}
                         value={modalAmount.toString()}
                         keyboardType="numeric"
