@@ -28,18 +28,23 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import { Float, Int32 } from 'react-native/Libraries/Types/CodegenTypes';
-import { init, readWallets, } from './database/database';
+import { addAdditive, addExpenses, init, read, } from './database/database';
+import { ViewExpenses } from './components/expenses'
+import { ViewAdditives } from './components/additives';
 init();
 const App: () => ReactNode = () => {
   const [ListItem,SetItem]=useState();
 //  const [ListItem,AddItem]=useState([{"amount": 0, "icon": "icon1.png", "id": 1, "name": "Example Wallet"}])
   async function ReadAllWallets () {
-   await  readWallets()
+   await  read('wallets')
    .then((result) => {
        SetItem(result);
       //console.log(result);
    });
   }
+  //addExpenses(1,1,300,'2021-09-14');
+  //addExpenses(1,1,300,'2021-09-14');
+  //addAdditive(1,1,2000,'2021-09-14')
  ReadAllWallets();
  //console.log(ListItem);
   return (
@@ -59,7 +64,10 @@ const App: () => ReactNode = () => {
           data={ListItem}
           renderItem={(item)=><View><Text>{item.item.id} {item.item.icon} {item.item.name} {item.item.amount}</Text></View>}/> 
         </View>
+        <ViewExpenses />
+        <ViewAdditives />
       </View>
+
     </View>
   );
 };
