@@ -235,6 +235,22 @@ export const changeExpenseWallet = (expenseId, newWalletId) => {
   return executeQuery(db, 'UPDATE expenses SET wallet_id=? WHERE id=?',[newWalletId, expenseId]);
 }
 
+export const chaneExpenseAmount = (expenseId, newAmount) => {
+  const db = openDatabase();
+
+  executeQuery(db, 'SELECT * FROM expenses WHERE id = ?', [expenseId]).then(item=> {
+    const amount = item.rows.raw()[0].amount;
+    const wallet = item.rows.raw()[0].wallet_id;
+    
+    addToWallet(wallet, amount);
+
+    removeFromWallet(wallet, newAmount)
+  });
+
+
+  return executeQuery(db, 'UPDATE expenses SET amount=? WHERE id=?',[newAmount, expenseId]);
+}
+
 // ADDITIVE TYPE FUNCTIONS
 export const addAdditiveType=(name, icon)=>{
   const db = openDatabase();

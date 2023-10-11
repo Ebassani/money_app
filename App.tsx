@@ -31,7 +31,9 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import { Float, Int32 } from 'react-native/Libraries/Types/CodegenTypes';
-import { init, read,getMoney,addWallet, updateWallet, deleteWallet } from './database/database';
+import { addAdditive, addExpenses, init, read, getMoney,addWallet, updateWallet, deleteWallet} from './database/database';
+import { ViewExpenses } from './components/expenses'
+import { ViewAdditives } from './components/additives';
 init();
 const App: () => ReactNode = () => {
   const [AddMode,SwapAddMode]=useState(false);
@@ -152,7 +154,10 @@ async function ReadAllWallets () {
         })} 
         </ScrollView>  
         </View>
+        <ViewExpenses />
+        <ViewAdditives />
       </View>
+
     </View>
   );
 };
