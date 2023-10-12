@@ -52,12 +52,7 @@ export const ViewExpenses = () => {
 
   return (
     <View>
-      <TouchableOpacity
-        onPress={() => {
-          setModalState(!modalState);
-        }}>
-        <Text>View Expenses</Text>
-      </TouchableOpacity>
+      <Button title="View Expenses" onPress={() => setModalState(!modalState)}></Button>
 
       <Modal visible={modalState}>
         <View style={styles.back}>

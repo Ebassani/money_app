@@ -127,10 +127,10 @@ const App: () => ReactNode = () => {
     <View style={styles.mainpage}>
       <View style={styles.head}>
         <View>
-          <Text style={styles.heading}> Current cash : </Text>
+          <Text style={styles.heading}> Current amount : </Text>
         </View>
         <View>
-          <Text style={styles.cash}>{CashTotal} $ </Text>
+          <Text style={styles.cash}>{CashTotal} € </Text>
         </View>
         <View style={styles.button} >
           <View style={styles.addbut}>
