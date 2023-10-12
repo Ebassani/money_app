@@ -79,16 +79,20 @@ export const ViewExpenseTypes = (walletId: any) => {
                         onChangeText={handleInputChange}
                         value={modalAmount.toString()}
                         keyboardType="numeric"
+                        style={styles.input}
+                        textAlign={'center'}
                         />
-                    <TouchableOpacity onPress={() => setShowModal(!showModal)}>
-                        <Text>Close</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {
-                        addExpenses(walletId.walletId,(SelectedType as any)?.id, modalAmount, getCurrentDate())
-                        setShowModal(!showModal)}
-                    }>
-                        <Text>Confirm</Text>
-                    </TouchableOpacity>
+                    <View style={styles.wrapper}>
+                        <TouchableOpacity style={styles.button} onPress={() => setShowModal(!showModal)}>
+                            <Text style={styles.button_text}>Close</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.button} onPress={() => {
+                            addExpenses(walletId.walletId,(SelectedType as any)?.id, modalAmount, getCurrentDate())
+                            setShowModal(!showModal)}
+                        }>
+                            <Text style={styles.button_text}>Confirm</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </Modal>
         </View>
@@ -149,7 +153,19 @@ const styles = StyleSheet.create({
       button_text: {
         color: 'white',
         fontSize:20
-    }
+    },
+    input: {
+        color: 'red',
+        fontSize: 30,
+        borderWidth: 2,
+        borderColor: 'rgb(24,24,24)',
+        margin: 3,
+        padding: 3,
+    },
+    wrapper: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
 });
 
 
