@@ -69,8 +69,8 @@ export const ViewExpenseTypes = (walletId: any) => {
                 })}
             </ScrollView>
 
-            <TouchableOpacity onPress={() => setModalState(!modalState)}>
-                <Text>Close</Text>
+            <TouchableOpacity style={styles.button} onPress={() => setModalState(!modalState)}>
+                <Text style={styles.button_text}>Close</Text>
             </TouchableOpacity>
 
             <Modal visible={showModal}>
@@ -79,16 +79,20 @@ export const ViewExpenseTypes = (walletId: any) => {
                         onChangeText={handleInputChange}
                         value={modalAmount.toString()}
                         keyboardType="numeric"
+                        style={styles.input}
+                        textAlign={'center'}
                         />
-                    <TouchableOpacity onPress={() => setShowModal(!showModal)}>
-                        <Text>Close</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {
-                        addExpenses(walletId.walletId,(SelectedType as any)?.id, modalAmount, getCurrentDate())
-                        setShowModal(!showModal)}
-                    }>
-                        <Text>Confirm</Text>
-                    </TouchableOpacity>
+                    <View style={styles.wrapper}>
+                        <TouchableOpacity style={styles.button} onPress={() => setShowModal(!showModal)}>
+                            <Text style={styles.button_text}>Close</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.button} onPress={() => {
+                            addExpenses(walletId.walletId,(SelectedType as any)?.id, modalAmount, getCurrentDate())
+                            setShowModal(!showModal)}
+                        }>
+                            <Text style={styles.button_text}>Confirm</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </Modal>
         </View>
@@ -113,7 +117,7 @@ const ExpenseTypes = (data: any) => {
     return (
         <View style={[styles.expense, styles.row]}>
             <Text>{type.name}</Text>
-            <Text>{TotalAmount}</Text>
+            <Text style={styles.red}>- {TotalAmount} €</Text>
         </View>
     );
 }
@@ -123,7 +127,10 @@ const styles = StyleSheet.create({
         flex: 0,
         justifyContent: 'space-between',
         alignContent: 'center',
-        margin: 3
+        margin: 3,
+        borderWidth:3,
+        borderColor: 'rgb(24,24,24)',
+        padding: 5
     },
     row: {
         flexDirection:'row'
@@ -134,7 +141,31 @@ const styles = StyleSheet.create({
     money: {
         flex: 0,
         justifyContent: 'center',
-    }
+    },
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgb(24,24,24)',
+        padding: 2,
+        margin: 5,
+        width: 100
+    },
+      button_text: {
+        color: 'white',
+        fontSize:20
+    },
+    input: {
+        color: 'red',
+        fontSize: 30,
+        borderWidth: 2,
+        borderColor: 'rgb(24,24,24)',
+        margin: 3,
+        padding: 3,
+    },
+    wrapper: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
 });
 
 

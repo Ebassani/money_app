@@ -52,12 +52,7 @@ export const ViewAdditives = () => {
 
   return (
     <View>
-      <TouchableOpacity
-        onPress={() => {
-          setModalState(!modalState);
-        }}>
-        <Text>View Gains</Text>
-      </TouchableOpacity>
+      <Button title="View Gains" onPress={() => setModalState(!modalState)}></Button>
 
       <Modal visible={modalState}>
         <View style={styles.back}>
