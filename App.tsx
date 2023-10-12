@@ -169,7 +169,7 @@ const App: () => ReactNode = () => {
               return (
                 <View key={index}>
                   <TouchableOpacity
-                      onLongPress={() => EditPrepare(item.id, item.name, item.amount)}
+                      onLongPress={() => DeletePrep(item.id)}
                       onPress={() =>
                         EditPrepare(item.id, item.name, item.amount)
                       }>
@@ -185,6 +185,9 @@ const App: () => ReactNode = () => {
             })}
           </ScrollView>
         </View>
+
+        <ViewExpenses />
+        <ViewAdditives />
       </View>
     </View>
   );

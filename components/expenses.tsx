@@ -44,9 +44,19 @@ export const ViewExpenses = () => {
         setModalAmount(parsedValue);
     };
 
+    const [modalState, setModalState] = useState(false);
     
     return ( 
         <View>
+
+        <TouchableOpacity onPress={() => {
+            setModalState(!modalState);
+        }}><Text>View Expenses</Text></TouchableOpacity>
+            
+        <Modal
+        visible={modalState}
+        >
+            <Text>Expenses:</Text>
             <ScrollView>
                 {Expenses.map((item: any, index)=>{
                 return (
@@ -60,7 +70,10 @@ export const ViewExpenses = () => {
                 )
                 })}
             </ScrollView>
-
+            <TouchableOpacity onPress={() => setModalState(!modalState)}>
+                <Text>Close</Text>
+            </TouchableOpacity>
+                </Modal>
             <Modal visible={showModal}>
                 <View>
                     <TextInput 
