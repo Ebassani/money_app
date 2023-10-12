@@ -24,7 +24,6 @@ export const ViewAdditiveTypes = (walletId: any) => {
         await  read('add_type')
         .then((result) => {
             SetTypes(result);
-            console.log(Types);
         });
         
     }
@@ -45,41 +44,55 @@ export const ViewAdditiveTypes = (walletId: any) => {
         setModalAmount(parsedValue);
     };
 
+    const [modalState, setModalState] = useState(false);
     
     return ( 
-        <View>
-            <ScrollView>
-                {Types.map((item: any, index)=>{
-                return (
-                    <TouchableOpacity key={index} onPress={()=> {
-                        handleClick(item);
-                        setShowModal(!showModal);
-                        handleInputChange(0);
-                    }}>
-                        <AdditiveTypes type={item} />
-                    </TouchableOpacity>
-                )
-                })}
-            </ScrollView>
+        <View><TouchableOpacity onPress={() => {
+            setModalState(!modalState);
+            }}><Text>Add</Text></TouchableOpacity>
+            
+        <Modal
+        visible={modalState}
+        >
+            <View>
+                <ScrollView>
+                    {Types.map((item: any, index)=>{
+                    return (
+                        <TouchableOpacity key={index} onPress={()=> {
+                            handleClick(item);
+                            setShowModal(!showModal);
+                            handleInputChange(0);
+                        }}>
+                            <AdditiveTypes type={item} />
+                        </TouchableOpacity>
+                    )
+                    })}
+                </ScrollView>
 
-            <Modal visible={showModal}>
-                <View>
-                    <TextInput 
-                        onChangeText={handleInputChange}
-                        value={modalAmount.toString()}
-                        keyboardType="numeric"
-                        />
-                    <TouchableOpacity onPress={() => setShowModal(!showModal)}>
-                        <Text>Close</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {
-                        addAdditive(walletId,(SelectedType as any)?.id, modalAmount, getCurrentDate())
-                        setShowModal(!showModal)}
-                    }>
-                        <Text>Confirm</Text>
-                    </TouchableOpacity>
-                </View>
-            </Modal>
+                <TouchableOpacity onPress={() => setModalState(!modalState)}>
+                    <Text>Close</Text>
+                </TouchableOpacity>
+
+                <Modal visible={showModal}>
+                    <View>
+                        <TextInput 
+                            onChangeText={handleInputChange}
+                            value={modalAmount.toString()}
+                            keyboardType="numeric"
+                            />
+                        <TouchableOpacity onPress={() => setShowModal(!showModal)}>
+                            <Text>Close</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+                            addAdditive(walletId.walletId,(SelectedType as any)?.id, modalAmount, getCurrentDate())
+                            setShowModal(!showModal)}
+                        }>
+                            <Text>Confirm</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
+            </View>
+        </Modal>
         </View>
     )
 }
@@ -88,13 +101,11 @@ const AdditiveTypes = (data: any) => {
     const [TotalAmount,SetTotalAmount]=useState(0);
 
     const type = data.type;
-
-    console.log(data);
     
 
     async function readValues() {
-        await getAmountAdditiveType(type.id).then(type => { 
-            SetTotalAmount(type);
+        await getAmountAdditiveType(type.id).then(amount => { 
+            SetTotalAmount(amount);
         });
     }
     

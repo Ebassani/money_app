@@ -183,10 +183,7 @@ const App: () => ReactNode = () => {
                         </Text>
                   
                     </TouchableOpacity>
-                  <TouchableOpacity onPress={() => {
-                    SetAdditiveTypeModal(!AdditiveTypeModal);
-                    SetSelectedWallet(item.id);
-                    }}><Text>Add</Text></TouchableOpacity>
+                    <ViewAdditiveTypes walletId={item.id} />
                   <TouchableOpacity onPress={() => {
                     SetExpenseTypeModal(!ExpenseTypeModal);
                     SetSelectedWallet(item.id);
@@ -196,13 +193,6 @@ const App: () => ReactNode = () => {
             })}
           </ScrollView>
 
-          <Modal visible={AdditiveTypeModal}>
-            <ViewAdditiveTypes  walletId={SelectedWallet} />
-
-            <TouchableOpacity onPress={() => SetAdditiveTypeModal(!AdditiveTypeModal)}>
-              <Text>Close</Text>
-            </TouchableOpacity>
-          </Modal>
           <Modal visible={ExpenseTypeModal}>
             <ViewExpenseTypes  walletId={SelectedWallet} />
 
