@@ -40,12 +40,15 @@ import {
   addWallet,
   updateWallet,
   deleteWallet,
+  addExpenseType,
+  addAdditiveType,
 } from './database/database';
 import {ViewExpenses} from './components/expenses';
 import {ViewAdditives} from './components/additives';
 import { ViewAdditiveTypes } from './components/additiveType';
 import { ViewExpenseTypes } from './components/expenseType';
 init();
+
 const App: () => ReactNode = () => {
   const [AddMode, SwapAddMode] = useState(false);
   const [EditMode, SwapEditMode] = useState(false);

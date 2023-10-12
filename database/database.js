@@ -36,6 +36,11 @@ const createTables = (db) => {
     addWallet("Example Wallet", 0, 'icon1.png');
     addExpenseType('Miscellaneous', 'icon1.png');
     addAdditiveType('Miscellaneous', 'icon1.png');
+    addExpenseType('Food', 'icon1.png');
+    addExpenseType('Housing', 'icon1.png');
+    addExpenseType('Transport', 'icon1.png');
+    addAdditiveType('Salary', 'icon1.png');
+    addAdditiveType('Gifts', 'icon1.png');
     console.log('Tables created successfully.');
   } catch (error) {
     console.error('Error creating tables: ', error);
