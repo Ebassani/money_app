@@ -119,11 +119,6 @@ const App: () => ReactNode = () => {
     SetCurID(id);
     deleteWallet(CurrID);
   }
-
-
-  const [AdditiveTypeModal, SetAdditiveTypeModal] = useState(false)
-  const [ExpenseTypeModal, SetExpenseTypeModal] = useState(false)
-  const [SelectedWallet, SetSelectedWallet] = useState(0)
   
   return (
     <View style={styles.mainpage}>
@@ -184,23 +179,11 @@ const App: () => ReactNode = () => {
                   
                     </TouchableOpacity>
                     <ViewAdditiveTypes walletId={item.id} />
-                  <TouchableOpacity onPress={() => {
-                    SetExpenseTypeModal(!ExpenseTypeModal);
-                    SetSelectedWallet(item.id);
-                    }}><Text>Spend</Text></TouchableOpacity>
+                    <ViewExpenseTypes  walletId={item.id} />
                 </View>
               );
             })}
           </ScrollView>
-
-          <Modal visible={ExpenseTypeModal}>
-            <ViewExpenseTypes  walletId={SelectedWallet} />
-
-            <TouchableOpacity onPress={() => SetExpenseTypeModal(!ExpenseTypeModal)}>
-              <Text>Close</Text>
-            </TouchableOpacity>
-          </Modal>
-
         </View>
       </View>
     </View>
