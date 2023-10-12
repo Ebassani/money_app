@@ -42,9 +42,20 @@ export const ViewAdditives = () => {
         const parsedValue = parseFloat(value) || 0;
         setModalAmount(parsedValue);
     };
+
+    const [modalState, setModalState] = useState(false);
     
     return ( 
         <View>
+
+        <TouchableOpacity onPress={() => {
+            setModalState(!modalState);
+        }}><Text>View Gains</Text></TouchableOpacity>
+            
+        <Modal
+        visible={modalState}
+        >
+            <Text>Gains:</Text>
             <ScrollView>
                 {Additives.map((item: any, index)=>{
                 return (
@@ -58,6 +69,10 @@ export const ViewAdditives = () => {
                 )
                 })}
             </ScrollView>
+            <TouchableOpacity onPress={() => setModalState(!modalState)}>
+                <Text>Close</Text>
+            </TouchableOpacity>
+            </Modal>
 
             <Modal visible={showModal}>
                 <View>

@@ -44,8 +44,16 @@ export const ViewExpenseTypes = (walletId: any) => {
         setModalAmount(parsedValue);
     };
 
+    const [modalState, setModalState] = useState(false);
     
     return ( 
+        <View><TouchableOpacity onPress={() => {
+            setModalState(!modalState);
+            }}><Text>Spend</Text></TouchableOpacity>
+            
+        <Modal
+        visible={modalState}
+        >
         <View>
             <ScrollView>
                 {Types.map((item: any, index)=>{
@@ -61,6 +69,10 @@ export const ViewExpenseTypes = (walletId: any) => {
                 })}
             </ScrollView>
 
+            <TouchableOpacity onPress={() => setModalState(!modalState)}>
+                <Text>Close</Text>
+            </TouchableOpacity>
+
             <Modal visible={showModal}>
                 <View>
                     <TextInput 
@@ -72,13 +84,15 @@ export const ViewExpenseTypes = (walletId: any) => {
                         <Text>Close</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
-                        addExpenses(walletId,(SelectedType as any)?.id, modalAmount, getCurrentDate())
+                        addExpenses(walletId.walletId,(SelectedType as any)?.id, modalAmount, getCurrentDate())
                         setShowModal(!showModal)}
                     }>
                         <Text>Confirm</Text>
                     </TouchableOpacity>
                 </View>
             </Modal>
+        </View>
+        </Modal>
         </View>
     )
 }

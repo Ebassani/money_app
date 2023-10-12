@@ -119,11 +119,6 @@ const App: () => ReactNode = () => {
     SetCurID(id);
     deleteWallet(CurrID);
   }
-
-
-  const [AdditiveTypeModal, SetAdditiveTypeModal] = useState(false)
-  const [ExpenseTypeModal, SetExpenseTypeModal] = useState(false)
-  const [SelectedWallet, SetSelectedWallet] = useState(0)
   
   return (
     <View style={styles.mainpage}>
@@ -174,7 +169,7 @@ const App: () => ReactNode = () => {
               return (
                 <View key={index}>
                   <TouchableOpacity
-                      onLongPress={() => EditPrepare(item.id, item.name, item.amount)}
+                      onLongPress={() => DeletePrep(item.id)}
                       onPress={() =>
                         EditPrepare(item.id, item.name, item.amount)
                       }>
@@ -183,35 +178,16 @@ const App: () => ReactNode = () => {
                         </Text>
                   
                     </TouchableOpacity>
-                  <TouchableOpacity onPress={() => {
-                    SetAdditiveTypeModal(!AdditiveTypeModal);
-                    SetSelectedWallet(item.id);
-                    }}><Text>Add</Text></TouchableOpacity>
-                  <TouchableOpacity onPress={() => {
-                    SetExpenseTypeModal(!ExpenseTypeModal);
-                    SetSelectedWallet(item.id);
-                    }}><Text>Spend</Text></TouchableOpacity>
+                    <ViewAdditiveTypes walletId={item.id} />
+                    <ViewExpenseTypes  walletId={item.id} />
                 </View>
               );
             })}
           </ScrollView>
-
-          <Modal visible={AdditiveTypeModal}>
-            <ViewAdditiveTypes  walletId={SelectedWallet} />
-
-            <TouchableOpacity onPress={() => SetAdditiveTypeModal(!AdditiveTypeModal)}>
-              <Text>Close</Text>
-            </TouchableOpacity>
-          </Modal>
-          <Modal visible={ExpenseTypeModal}>
-            <ViewExpenseTypes  walletId={SelectedWallet} />
-
-            <TouchableOpacity onPress={() => SetExpenseTypeModal(!ExpenseTypeModal)}>
-              <Text>Close</Text>
-            </TouchableOpacity>
-          </Modal>
-
         </View>
+
+        <ViewExpenses />
+        <ViewAdditives />
       </View>
     </View>
   );
