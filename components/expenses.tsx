@@ -84,31 +84,38 @@ export const ViewExpenses = () => {
           </TouchableOpacity>
         </View>
       </Modal>
+      
       <Modal visible={showModal}>
         <View>
-          <TextInput
-            onChangeText={handleInputChange}
-            value={modalAmount.toString()}
-            keyboardType="numeric"
-          />
-          <TouchableOpacity onPress={() => setShowModal(!showModal)}>
-            <Text>Close</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              deleteExpenses((SelectedExpense as any)?.id);
-              readExpenses();
-              setShowModal(!showModal);
-            }}>
-            <Text>Delete</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              changeExpenseAmount((SelectedExpense as any)?.id, modalAmount);
-              setShowModal(!showModal);
-            }}>
-            <Text>Update</Text>
-          </TouchableOpacity>
+            <TextInput
+                onChangeText={handleInputChange}
+                value={modalAmount.toString()}
+                keyboardType="numeric"
+                style={styles.input}
+                textAlign={'center'}
+            />
+
+            <View style={styles.wrapper}>
+                <TouchableOpacity style={styles.button}
+                    onPress={() => {
+                    deleteExpenses((SelectedExpense as any)?.id);
+                    readExpenses();
+                    setShowModal(!showModal);
+                    }}>
+                    <Text style={styles.button_text}>Delete</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button}
+                    onPress={() => {
+                    changeExpenseAmount((SelectedExpense as any)?.id, modalAmount);
+                    setShowModal(!showModal);
+                    }}>
+                    <Text style={styles.button_text}>Update</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.button} onPress={() => setShowModal(!showModal)}>
+                    <Text style={styles.button_text}>Close</Text>
+                </TouchableOpacity>
+            </View>
         </View>
       </Modal>
     </View>
@@ -169,4 +176,28 @@ const styles = StyleSheet.create({
   back_text: {
     color: 'white',
   },
+  input: {
+    color: 'red',
+    fontSize: 30,
+    borderWidth: 2,
+    borderColor: 'rgb(24,24,24)',
+    margin: 3,
+    padding:3,
+  },
+  wrapper: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgb(24,24,24)',
+    padding: 2,
+    margin: 5,
+    width: 100
+  },
+  button_text: {
+    color: 'white',
+    fontSize:20
+  }
 });
