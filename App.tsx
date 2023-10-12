@@ -129,8 +129,11 @@ const App: () => ReactNode = () => {
         <View>
           <Text style={styles.cash}>{CashTotal} $ </Text>
         </View>
-        <View>
-          <Button title="Add wallet" onPress={ModalON}></Button>
+        <View style={styles.button} >
+          <View style={styles.addbut}>
+          <Button title="Add wallet" onPress={ModalON}></Button></View>
+          <View style={styles.addbut}><ViewExpenses /></View>
+          <View style={styles.addbut}><ViewAdditives /></View>
         </View>
       </View>
       <View style={styles.pagebody}>
@@ -167,7 +170,7 @@ const App: () => ReactNode = () => {
             contentContainerStyle={styles.walletlist}>
             {ListItem.map((item: any, index) => {
               return (
-                <View key={index}>
+                <View style={styles.walletwhole} key={index}>
                   <TouchableOpacity
                       onLongPress={() => DeletePrep(item.id)}
                       onPress={() =>
@@ -177,17 +180,15 @@ const App: () => ReactNode = () => {
                           {item.name} {item.amount}{' '}
                         </Text>
                   
-                    </TouchableOpacity>
-                    <ViewAdditiveTypes walletId={item.id} />
-                    <ViewExpenseTypes  walletId={item.id} />
+                    </TouchableOpacity><View style={styles.button}>
+                    <View style={styles.addbut}><ViewAdditiveTypes walletId={item.id} /></View>
+                    <View style={styles.addbut}><ViewExpenseTypes  walletId={item.id} /></View>
+                    </View>
                 </View>
               );
             })}
           </ScrollView>
         </View>
-
-        <ViewExpenses />
-        <ViewAdditives />
       </View>
     </View>
   );
@@ -207,7 +208,7 @@ const styles = StyleSheet.create({
     top: 0,
     width: '100%',
     alignItems: 'center',
-    padding: 30,
+    padding: 0,
     borderBottomWidth: 5,
     borderColor: 'blue',
     borderRadius: 5,
@@ -219,32 +220,61 @@ const styles = StyleSheet.create({
   cash: {
     fontSize: 30,
     color: 'green',
+    padding: 10 ,
   },
   pagebody: {
     flex: 2,
     position: 'absolute',
-    top: 150,
+    top: 200,
+    width: '80%'
+  },
+
+  walletwhole :{
+    borderWidth :3,
+    borderBottomColor : 'rgb(24,24,24)',
+    width: '100%',
   },
   walletlist: {
     flex: 1,
-    textShadowColor: 'gray',
-    backgroundColor: 'whitesmoke',
-    width: '100%',
     alignItems: 'center',
+
   },
   scrolllist: {
     flexGrow: 1,
+    width:'100%'
   },
   walletitem: {
-    fontSize: 20,
+    fontSize: 25,
     color: 'black',
+ width: '100%',
+ textAlign:'center',
+ padding:5,
+
+  },
+  walletbuttons :{
+    height:50,
   },
   fields: {
     width: '100%',
   },
-  buttons: {
-    width: 100,
+button: {
+ fontSize: 20 ,
+ shadowColor: 'black',
+  flexDirection: "row" ,
+    marginLeft: 20, 
+    justifyContent: 'space-evenly',
+    padding : 5 ,
+
+},
+  buttontext: {
     alignSelf: 'center',
+    color:'black',
+    shadowColor:'gray',
+    fontSize:20,
+  },
+  addbut : {
+    margin: 10,
+   
   },
 });
 
