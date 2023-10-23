@@ -56,13 +56,13 @@ export const ViewAdditiveTypes = (walletId: any) => {
     }
     
     
-    const updateNames=()=> {
+    const updateValues=()=> {
         Types.forEach(element => {
             readValues(element);
         });
     }
 
-    updateNames();
+    updateValues();
     
     return ( 
         <View><TouchableOpacity onPress={() => {
@@ -120,13 +120,8 @@ export const ViewAdditiveTypes = (walletId: any) => {
 }
 
 const AdditiveTypes = (data: any) => {
-    
-
     const type = data.type;
     const amount = data.amount;
-    
-    console.log(amount);
-    
 
     return (
         <View style={[styles.additive, styles.row]}>

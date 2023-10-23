@@ -45,6 +45,24 @@ export const ViewExpenseTypes = (walletId: any) => {
     };
 
     const [modalState, setModalState] = useState(false);
+
+    const anyArray: any = [];
+    const [TotalAmount,SetTotalAmount] = useState(anyArray);
+
+    async function readValues(type: any) {
+        await getAmountExpenseType(type.id).then(amount => { 
+            SetTotalAmount((TotalAmount: any)=>[...TotalAmount, amount]);
+        });
+    }
+    
+    
+    const updateValues=()=> {
+        Types.forEach(element => {
+            readValues(element);
+        });
+    }
+
+    updateValues();
     
     return ( 
         <View><TouchableOpacity onPress={() => {
@@ -63,7 +81,7 @@ export const ViewExpenseTypes = (walletId: any) => {
                         setShowModal(!showModal);
                         handleInputChange(0);
                     }}>
-                        <ExpenseTypes type={item} />
+                        <ExpenseTypes type={item} amount={TotalAmount[index]} />
                     </TouchableOpacity>
                 )
                 })}
@@ -102,22 +120,13 @@ export const ViewExpenseTypes = (walletId: any) => {
 }
 
 const ExpenseTypes = (data: any) => {
-    const [TotalAmount,SetTotalAmount]=useState(0);
-
     const type = data.type;
-
-    async function readValues() {
-        await getAmountExpenseType(type.id).then(type => { 
-            SetTotalAmount(type);
-        });
-    }
-    
-    readValues()
+    const amount = data.amount;
 
     return (
         <View style={[styles.expense, styles.row]}>
             <Text>{type.name}</Text>
-            <Text style={styles.red}>- {TotalAmount} €</Text>
+            <Text style={styles.red}>- {amount} €</Text>
         </View>
     );
 }
