@@ -50,7 +50,6 @@ export const ViewAdditives = () => {
 
   const [modalState, setModalState] = useState(false);
 
-
   const anyArray: any = [];
   const anyArray2: any = [];
 
