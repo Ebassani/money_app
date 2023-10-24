@@ -50,6 +50,28 @@ export const ViewAdditives = () => {
 
   const [modalState, setModalState] = useState(false);
 
+  const anyArray: any = [];
+  const anyArray2: any = [];
+
+  const [Type, SetType] = useState(anyArray);
+  const [Wallet, SetWallet] = useState(anyArray2);
+
+  async function readValues(additive: any) {
+    await getAdditiveType(additive.add_type_id).then(type => {
+      SetType((Type: any)=>[...Type, type]);
+    });
+    await getWalletName(additive.wallet_id).then(wallet => SetWallet((Wallet: any)=>[...Wallet,wallet]));
+  }
+  
+  
+  const updateNames=()=> {
+    Additives.forEach(element => {
+      readValues(element);
+    });
+  }
+
+  updateNames();
+
   return (
     <View>
       <Button title="View Gains" onPress={() => setModalState(!modalState)}></Button>
@@ -68,7 +90,7 @@ export const ViewAdditives = () => {
                   setShowModal(!showModal);
                   handleInputChange(item.amount);
                 }}>
-                <PriceAdditive additive={item} />
+                <PriceAdditive additive={item} wallet={Wallet[index]} type={Type[index]} />
               </TouchableOpacity>
             );
           })}
@@ -116,25 +138,15 @@ export const ViewAdditives = () => {
 };
 
 const PriceAdditive = (data: any) => {
-  const [Type, SetType] = useState('');
-  const [Wallet, SetWallet] = useState('');
-
   const additive = data.additive;
-
-  async function readValues() {
-    await getAdditiveType(additive.add_type_id).then(type => {
-      SetType(type);
-    });
-    await getWalletName(additive.wallet_id).then(wallet => SetWallet(wallet));
-  }
-
-  readValues();
+  const wallet = data.wallet;
+  const type = data.type;
 
   return (
     <View style={[styles.expense, styles.row]}>
       <View>
-        <Text>{Type}</Text>
-        <Text>{Wallet}</Text>
+        <Text>{type}</Text>
+        <Text>{wallet}</Text>
       </View>
       <View style={styles.money}>
         <Text style={styles.green}>+ {additive.amount} €</Text>
